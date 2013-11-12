@@ -1,0 +1,261 @@
+% jr.tex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % support the \includegraphics command and optio
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+\newcommand{\Var}{\mathop{\rm{Var}}}
+\newcommand{\Cov}{\mathop{\rm{Cov}}}
+
+% \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+\title{Generalized Jarrow-Rudd Approximate Option Valuation}
+\author{Keith A. Lewis}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Outline}
+
+Instead of working with the difference of the cumulants from a lognormal
+distribution as in Jarrow-Rudd \cite{?} we work with the difference of
+the cumulants of a 
+normal distribution. This
+is more natural since the cumulants of the normal distribution are
+simple to interpret.
+
+We derive a reasonably efficient method for computing the perturbed
+distribution and show the Esscher transform of the perturbed distribution
+can also be computed by the same method.
+
+\section{Cumulants}
+
+The {\em cumulants}, \((\kappa_n)\), of a random variable \(X\)
+are defined by
+\[
+\log Ee^{uX} = \sum_{n=0}^\infty \kappa_n \frac{u^n}{n!}
+\]
+Taking \(u = 0\) yields \(\kappa_0 = 0\). Since
+\((d/du)^n\log Ee^{uX}|_{u = 0} = \kappa_n\) it is easy to
+work out that
+\(\kappa_1 = EX\) and \(\kappa_2 = \Var(X)\). Higher order
+cumulants are less intuitive.
+
+Cumulants have some handy properties. 
+The cumulants of a random variable plus a constant are the 
+same except the first cumulant is increased by the constant.
+More generally, the cumulants of the sum of two independent 
+random variables are the sums of the cumulants.
+The \(n\)-th cumulant is homogeneous of degree \(n\), 
+\(\kappa_n(cX) = c^n\kappa_n(X)\).
+
+Another nice property of cumulants is that they are more likely
+to exists than moments, \(m_n = EX^n\).
+The relationship between cumulants and moments when they both
+exist involves Bell polynomials\cite{?}.
+\[
+Ee^{uX} = \sum_{n=0}^\infty m_n \frac{u^n}{n!}
+ = \exp(\sum_{n=1}^\infty \kappa_n \frac{u^n}{n!})
+= \sum_{n=0}^\infty B_n(\kappa_1,\dots,\kappa_n) \frac{u^n}{n!}
+\]
+where \(B_n(\kappa_1,\dots,\kappa_n)\) is the \(n\)-th complete
+Bell polynomial.
+This is just a special case of the
+Fa\`a di Bruno formula first proved by Louis Fran\c{c}ois Antoine
+Arborgast in 1800\cite{Arborgast}.
+Bell polynomials satisfy the recurrence \cite{Comtet} \(B_0 = 1\) and
+\[
+B_{n+1}(x_1,\dots,x_{n+1}) = \sum_{k=0}^n \binom{n}{k}
+B_{n - k}(x_1,\dots, x_{n - k}) x_{k+1}.
+\]
+
+\subsection{Examples}
+If \(X\) is
+normal then \(Ee^X = e^{E X + \Var(X)/2}\) so
+\(Ee^{uX} = e^{uEX + u^2\Var(X)/2}\) showing the
+third and higher order cumulants vanish, if \(X\) is Poisson
+with mean \(\mu\) then \(\kappa_n = \mu\) for all \(n\), and
+if \(X\) is exponential with mean \(\mu\) then
+\(\kappa_n = (n - 1)!\mu^n\).
+%\(\chi^2\) with \(r\) degrees of freedom \(\kappa_n = 2^{n-1}(n-1)!r\).
+
+\section{Edgeworth Expansion}
+Given random
+variables \(X\) and \(Y\), we have
+\[\log E e^{iuY} - \log E e^{iuX} = \sum_{n=1}^\infty \Delta\kappa_n (iu)^n/n!\]
+where \((\Delta\kappa_n)\) are the differences of the cumulants 
+of \(Y\) and \(X\), so
+\[
+Ee^{iuY} = Ee^{iuX}\sum_{n=0}^\infty \frac{B_n}{n!}(iu)^n.
+\]
+
+Let \(F\) and \(G\) be the cumulative distribution functions of
+\(X\) and \(Y\) respectively.
+The simple fact that the Fourier transform of \(F'\) is \(-iu \hat F(u)\) 
+implies the Fourier transform of the \(n\)-th derivative
+\(F^{(n)}\) is \((-iu)^n\hat F(u)\).
+Taking the inverse Fourier transform shows
+\[
+G(x) = \sum_{n=0}^\infty (-1)^n \frac{B_n}{n!} F^{(n)}(x)
+\]
+
+\subsection{Hermite Polynomials}
+The derivatives the standard normal cumulative distribution 
+can be computed using Hermite polynomials\cite{?}.
+Recall the Hermite polynomials are the result of the Gram-Schmidt
+process applied to the basis \((x^n)_{n\ge0}\) on the Hilbert space
+having inner product \((f,g) = \int_{-\infty}^\infty f(x)g(x)\,e^{-x^2/2}dx\).
+The standard result is
+\[
+H_n(x) = (-1)^n e^{x^2/2}\frac{d^n}{dx^n}e^{-x^2/2}.
+\]
+They satisfy the recurence \(H_0(x) = 1\), \(H_1(x) = x\) and
+\[
+H_{n+1}(x) = xH_n(x) - n H_{n-1}(x).
+\]
+Note some authors use \(He_n(x)\) instead of \(H_n(x)\).
+
+We have
+\(
+F^{(1)}(x) = F'(x) = e^{-x^2/2}/\sqrt{2\pi} 
+= H_0(x) e^{-x^2/2}/\sqrt{2\pi}.
+\)
+More generally, 
+\[
+F^{(n)}(x) = (-1)^{n-1} H_{n-1}(x) e^{-x^2/2}/\sqrt{2\pi}.
+\]
+
+For appropriate \(\phi\), e.g., exponentially bounded, 
+integration by parts shows 
+\(\int_{-\infty}^\infty \phi(x)\,dF^{(n)}
+= - \int_{-\infty}^\infty \phi'(x)F^{(n)}\,dx
+= - \int_{-\infty}^\infty \phi'(x)\,dF^{(n-1)}\)
+so for any \(k\le n\)
+\[
+\int_{-\infty}^\infty \phi(x)\,dF^{(n)}
+= (-1)^k \int_{-\infty}^\infty \phi^{(k)}(x)\,dF^{(n-k)}.
+\]
+
+%\subsection{Put Valuation}
+%The forward value of a put option with strike \(k\) is
+%\(E\max\{k - S, 0\}\) where 
+%\(S = s\exp(-\kappa(t,\sigma) + \sigma\sqrt{t}Y)\)
+%and \(\kappa(t\sigma) = \log E \exp(\sigma\sqrt{t}Y)\).
+%so \(ES = s\).
+%
+%Let \(\phi(y) = \max\{k - se\exp(-\kappa(t,\sigma) + \sigma\sqrt{t}y)\)
+
+\section{Option Valuation}
+The forward value of a put on a stock \(S\) with strike \(k\) is
+\[
+E\max\{k - S,0\} = k P(S \le k) - E S\,P^*(S \le k)
+\]
+where \(dP^*/dP = S/ES\) is the {\em Esscher transform}.
+As we will see, this is the analog of 
+\(E\max\{k - S,0\} = kN(-d_2) - sN(-d_1)\)
+when \(S\) is lognormal.
+
+\subsection{Black Model}
+The Black model is \(S = S_t = se^{-\sigma^2t/2 + \sigma B_t}\)
+where \((B_t)\) is standard Brownian motion and \(t\) is time
+in years. Note \(ES = s\) and \(S \le k\)
+if and only if \(B_t/\sqrt{t} \le z\) where
+\(z = (\log k/s + \sigma^2 t/2)/\sigma\sqrt{t}\). In the usual
+notation \(z = -d_2\).
+
+Letting \(X = B_t/\sqrt{t}\) and so \(F = N\) is the standard
+normal cumulative distributing function we have
+\(P(X\le z) = F(z)\) and \(P^*(X\le z) = P(X + \sigma\sqrt{t} \le z)
+= F(z - \sigma\sqrt{t})\) where we use the fact
+\[
+Ee^U f(V) = Ee^U Ef(V + \Cov(U,V))
+\]
+if \(U\) and \(V\) are
+jointly normal. In the standard notation \(z - \sigma\sqrt{t} = -d_1\).
+
+\subsection{Generalized Black Model}
+The generalized Black model is \(S = se^{-\kappa(t,\sigma) + \sigma C_t}\)
+where \((C_t)\) is any stochastic process and 
+\(\kappa(t, \sigma) = \log E \exp(\sigma C_t)\). 
+Note \(ES = s\) and \(S \le k\)
+if and only if 
+\(C_t/\sqrt{t} \le (\log k/s + \kappa(t,\sigma))/\sigma\sqrt{t}\).
+
+Letting \(Y = C_t/\sqrt{t}\) and \(G\) be the corresponding cumulative
+distribution function, \(G(z) = P(Y\le z)\), we need to compute
+\[
+G^*(z) = P^*(Y\le z) = Ee^{-\kappa(t,\sigma) + \sigma\sqrt{t}Y}1(Y\le z).
+\]
+Letting \(\gamma = \sigma\sqrt{t}\), the cumulants of \(G^*\) can be found from
+\begin{align*}
+\log E e^{uY^*} &= \log E e^{-\kappa(t,\gamma) + \gamma Y} e^{uY}\\
+&= -\kappa(t, \gamma) + \log E e^{(u + \gamma) Y}\\
+&= -\sum_{n=1}^\infty \kappa_n \frac{\gamma^n}{n!} 
+	+ \kappa_n \frac{(u + \gamma)^n}{n!}\\
+&= \sum_{n=1}^\infty \sum_{k=1}^n \kappa_n \binom{n}{k}
+	\frac{\gamma^{n - k}u^k}{n!}\\
+&= \sum_{k=1}^\infty \sum_{n=k}^\infty \kappa_n 
+	\binom{n}{k}\frac{\gamma^{n - k}u^k}{n!}\\
+&= \sum_{k=1}^\infty \sum_{n=k}^\infty \kappa_n \frac{\gamma^{n-k}}{(n-k)!}
+	\frac{u^k}{k!}\\
+&= \sum_{k=1}^\infty 
+	\bigl(\sum_{n=0}^\infty \kappa_{n+k} \frac{\gamma^n}{n!}\bigr)
+	\frac{u^k}{k!}\\
+\end{align*}
+This shows the cumulants of \(Y^*\) are 
+\(\kappa^*_k = \sum_{n=0}^\infty \kappa_{n + k}\gamma^n/n!\)
+so we can compute \(P(Y^* \le z) = G^*(z)\) using the same
+technique as we did for \(G\).
+%
+%The Edgeworth series expands the exponential in a power series.
+%\[\exp\bigl(\sum_{n=0}^\infty \Delta\kappa_n (iu)^n/n!\bigr)
+%= \sum_{k=0}^\infty (\sum_{n=0}^\infty \Delta\kappa_n (iu)^n/n!)^k/k!\]
+%
+\section{K-model}
+Kolmogorov's version of the L\'evy-Khintchine theorem\cite{?}
+states that if a random variable \(X\) is infinitely divisible
+there exists a number \(\gamma\) and a non-decreasing function
+\(G\) defined on the real line such that
+\[
+\log Ee^{iuX} = iu\gamma + \int_{-\infty}^\infty K_u(x)\,dG(x),
+\]
+where \(K_u(x) = (\exp(iux) - 1 - iux)/x^2\). Note the first
+cumulant of \(X\) is \(\gamma\) and for \(n\ge 2\),
+\(\kappa_n = \int_{-\infty}^\infty x^{n-2}\,dG(x)\). In particular
+the variance of \(X\) is 
+\(\int_{-\infty}^\infty dG(x) = G(\infty) - G(-\infty)\).
+
+The K-model takes \(\gamma = 0\) and \(G\) of the form
+\[
+G(x) =
+\begin{cases}
+a e^{x/\alpha} &x < 0\\
+1 - be^{-x/\beta} & x > 0\\
+\end{cases}
+\]
+Note \(G\) jumps by \(1 - a - b\) at the origin. If \(a = b = 0\)
+this reduces to a standard normal distribution.
+
+The cumulants are simple to compute: \(\kappa_1 = 0\), \(\kappa_2 = 1\),
+and \(\kappa_{n+2} = (a(-\alpha)^n + b\beta^n)n!\) for \(n > 1\).
+
+\section{Remarks}
+The Gram-Charlier A series expands the quotients of cumulative
+distribution functions \(G/F\) using Hermite polynomials,
+but does not have asymptotic convergence, whereas the Edgeworth expansion
+involves the quotient of characteristic functions 
+\(\hat G/\hat F\) in terms of cumulants and does have asymptotic convergence, ignoring some dainty facts \cite{Petrov}.
+
+\end{document}
+%jarrow-rudd
+%Arbogast, L. F. A. (1800), Du calcul des derivations (in French), Strasbourg: %Levrault, pp. xxiii+404, Entirely freely available from Google 
+%[5] C.A. Charalambides, Enumerative Combinatorics. 
+%Chapman & Hall/CRC, 2002. 
+%[6] L. Comtet, Advanced Combinatorics, Reidel, Dordrecht, 1974. 
+%J.P. Gram, "Ueber die Entwicklung reeller Funktionen in Reihen mittelst der Methode der kleinsten Quadraten" J. Reine Angew. Math. , 94 (1883) pp. 41–73  
+%[Ch] C.V.L. Charlier, "Frequency curves of type  in heterograde statistics" Ark. Mat. Astr. Fysik , 9 : 25 (1914) pp. 1–17  
+%E. T. Bell, Exponential polynomials, Annals of Mathematics 35 (1934), 258–277
+
