@@ -29,14 +29,12 @@ namespace fms {
 		template<class X = double>
 		void esscher(size_t nk, const X* kappa, const X& gamma, X* kappa_)
 		{
-			ensure (kappa + nk <= kappa_ && kappa_ + nk < kappa);
-
 			if (nk > 0)
 				std::copy(kappa, kappa + nk, kappa_);
 
 			for (size_t k = 0; k < nk; ++k) {
 				X gn = gamma; // gamma^n/n!
-				for (size_t n = 0; n + k < nk; ++n, gn *= gamma/n)
+				for (size_t n = 1; n + k < nk; ++n, gn *= gamma/n)
 					kappa_[k] += kappa[n + k]*gn;
 			}
 		}

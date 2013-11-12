@@ -73,16 +73,7 @@ namespace fms {
 			{
 				auto gamma = volatility*sqrt(t);
 
-				kappa_ = kappa;
-				if (!black_ && gamma) {
-					for (size_t k = 0; k < kappa_.size(); ++k) {
-						decltype(gamma) gn(1); // gamma^n/n!
-						for (size_t n = 1; n + k < kappa_.size(); ++n) {
-							gn *= gamma/n;
-							kappa_[n] += kappa[n + k]*gn;
-						}
-					}
-				}
+				distribution::esscher(kappa.size(), &kappa[0], gamma, &kappa_[0]);
 			}
 
 			// P(F <= k) = E[1(F <= k)]
