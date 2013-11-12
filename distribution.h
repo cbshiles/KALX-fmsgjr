@@ -29,7 +29,7 @@ namespace fms {
 		template<class X = double>
 		void esscher(size_t nk, const X* kappa, const X& gamma, X* kappa_)
 		{
-			ensure (kappa + nk <= kappa_ || kappa_ + nk < kappa);
+			ensure (kappa + nk <= kappa_ && kappa_ + nk < kappa);
 
 			if (nk > 0)
 				std::copy(kappa, kappa + nk, kappa_);
@@ -90,7 +90,7 @@ namespace fms {
 				X tol(0);
 				X eps(1e-8);
 				for (size_t i = 1; i < 30 && (tol == 0 || fabs(tol) > eps); ++i, _1 *= -1) {
-					X Bi = Bell(i, k, kappa, true);
+					X Bi = polynomial::Bell(i, k, kappa, true);
 
 					if (Bi) {
 						X dg = _1*Bi*F(z, i + n);

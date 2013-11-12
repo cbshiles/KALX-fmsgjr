@@ -5,7 +5,7 @@
 #include <random>
 //#include "exp.h"
 //#include "fms_distribution.h"
-#include "fmsvalue.h"
+#include "fmsgjr.h"
 
 using namespace fms;
 static std::default_random_engine dre;
@@ -28,7 +28,10 @@ void test_value()
 	ensure (v == v_);
 	v = value<T>(mb, instrument::call<>(k,t));
 	ensure (v == v_);
-//	v_ = value<T>(model::jarrow_rudd<>(f,s), instrument::option<>(k,t));
+	v_ = value<T>(model::gjr<>(f,s), instrument::option<>(k,t));
+	model::gjr<> mg(f,s);
+	instrument::option<> o(k,t);
+	v = value<T>(mg, o);
 
 	model::black<float,int> mbfi(100., 1);
 	v = value<T>(mb, instrument::option<>(k,t));

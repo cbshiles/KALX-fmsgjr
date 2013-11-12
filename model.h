@@ -1,5 +1,7 @@
 // model.h
 #pragma once
+#include <valarray>
+#include "distribution.h"
 
 namespace fms {
 	namespace model {
@@ -50,7 +52,8 @@ namespace fms {
 		public:
 			F forward;
 			S volatility;
-			std::valarray<F> kappa, kappa_;
+			std::valarray<F> kappa;
+			mutable std::valarray<F> kappa_;
 
 			gjr(const F& f = 0, const S& s = 0, size_t k = 0, const double* c = 0)
 				: forward(f), volatility(s), kappa(c, k), kappa_(k)
@@ -66,7 +69,7 @@ namespace fms {
 
 			// set X_t
 			template<class T>
-			void at(const T& t)
+			void at(const T& t) const
 			{
 				auto gamma = volatility*sqrt(t);
 
@@ -84,8 +87,7 @@ namespace fms {
 
 			// P(F <= k) = E[1(F <= k)]
 			template<class K = double, class T = double>
-			auto cdf(K k, T t) const 
-				-> std::pair<decltype(forward + volatility + k + t),decltype(forward + volatility + k + t)>
+			auto cdf(K k, T t) const -> decltype(forward + volatility + k + t)
 			{
 				auto f = forward;
 				auto s = volatility;
@@ -97,13 +99,12 @@ namespace fms {
 
 			// P(F <= k) = E[1(F <= k)]
 			template<class K = double, class T = double>
-			auto cdf_(K k, T t) const 
-				-> std::pair<decltype(forward + volatility + k + t),decltype(forward + volatility + k + t)>
+			auto cdf_(K k, T t) const -> decltype(forward + volatility + k + t)
 			{
 				auto f = forward;
 				auto s = volatility;
 				auto gamma = s*sqrt(t);
-				auto z = (log(k/f) + gamma*gamma/2)/gamma;
+				auto z = (log(k/f) - gamma*gamma/2)/gamma;
 
 				at(t);
 

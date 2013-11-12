@@ -45,5 +45,4 @@ namespace fms{
 		}
 
 	} // polynomial
-
-}
+} // fms
