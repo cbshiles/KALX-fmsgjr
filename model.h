@@ -83,7 +83,7 @@ namespace fms {
 				auto f = forward;
 				auto s = volatility;
 				auto gamma = s*sqrt(t);
-				auto z = (log(k/f) + gamma*gamma/2)/gamma;
+				auto z = log(f/k)/gamma + gamma/2;
 
 				return distribution::standard_normal<decltype(z)>::G(z, 0, kappa.size(), &kappa[0]);
 			}
@@ -95,7 +95,7 @@ namespace fms {
 				auto f = forward;
 				auto s = volatility;
 				auto gamma = s*sqrt(t);
-				auto z = (log(k/f) + gamma*gamma/2)/gamma;
+				auto z = log(f/k)/gamma + gamma/2;
 
 				at(t);
 
