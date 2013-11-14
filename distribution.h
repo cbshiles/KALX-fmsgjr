@@ -29,8 +29,11 @@ namespace fms {
 		template<class X = double>
 		void esscher(size_t nk, const X* kappa, const X& gamma, X* kappa_)
 		{
-			if (nk > 0)
-				std::copy(kappa, kappa + nk, kappa_);
+			if (nk == 0)
+				return;
+
+			std::copy(kappa, kappa + nk, kappa_);
+			kappa_[0] = gamma;
 
 			for (size_t k = 0; k < nk; ++k) {
 				X gn = gamma; // gamma^n/n!
@@ -76,18 +79,15 @@ namespace fms {
 			}
 			// perturb first k cumulants by kappa
 			template<class X = double, class K>
-			static X F_(const X& z, size_t n = 0, size_t k = 0, const K* kappa = 0, size_t N = 0, X* dG = 0)
+			static X G(const X& z, size_t n = 0, size_t k = 0, const K* kappa = 0, size_t N = 0, X* dG = 0)
 			{
-				X g = F(z, n);
+				X g(0);
 
-				if (k == 0)
-					return g;
-
-				X _1(-1); // (-1)^n
+				X _1(1); // (-1)^n
 				// put in policy class
 				X tol(0);
 				X eps(1e-8);
-				for (size_t i = 1; i < 30 && (tol == 0 || fabs(tol) > eps); ++i, _1 *= -1) {
+				for (size_t i = 0; i < 30 && (tol == 0 || fabs(tol) > eps); ++i, _1 *= -1) {
 					X Bi = polynomial::Bell(i, k, kappa, true);
 
 					if (Bi) {

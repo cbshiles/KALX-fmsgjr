@@ -85,7 +85,7 @@ namespace fms {
 				auto gamma = s*sqrt(t);
 				auto z = (log(k/f) + gamma*gamma/2)/gamma;
 
-				return distribution::standard_normal<decltype(z)>::F_(z, 0, kappa.size(), &kappa[0]);
+				return distribution::standard_normal<decltype(z)>::G(z, 0, kappa.size(), &kappa[0]);
 			}
 
 			// P(F <= k) = E[1(F <= k)]
@@ -95,11 +95,11 @@ namespace fms {
 				auto f = forward;
 				auto s = volatility;
 				auto gamma = s*sqrt(t);
-				auto z = (log(k/f) - gamma*gamma/2)/gamma;
+				auto z = (log(k/f) + gamma*gamma/2)/gamma;
 
 				at(t);
 
-				return distribution::standard_normal<decltype(z)>::F_(z, 0, kappa_.size(), &kappa_[0]);
+				return distribution::standard_normal<decltype(z)>::G(z, 0, kappa_.size(), &kappa_[0]);
 			}
 			
 		};
