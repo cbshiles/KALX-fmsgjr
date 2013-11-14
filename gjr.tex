@@ -22,14 +22,18 @@
 
 Instead of working with the difference of the cumulants from a lognormal
 distribution as in Jarrow-Rudd \cite{?} we work with the difference of
-the cumulants of a 
-normal distribution. This
-is more natural since the cumulants of the normal distribution are
-simple to interpret.
+the cumulants of a normal distribution. 
+This is more natural since the cumulants of a normal distribution are
+easier to interpret.
 
-We derive a reasonably efficient method for computing the perturbed
-distribution and show the Esscher transform of the perturbed distribution
-can also be computed by the same method.
+In section 2 we recall some basic fact about cumulants.
+Section 3 uses an Edgeworth expansion to give an explicit formula for
+the cumulative distribution function of the perturbed distribution.
+Option valuation is considered in section 4. We show how the
+Esscher transform can be calculated using the same method as in
+section 3. The K-model is described in section 5 as a parameterization
+that seems to fit market data well. The last section collects some
+general remarks.
 
 \section{Cumulants}
 
@@ -54,8 +58,7 @@ The \(n\)-th cumulant is homogeneous of degree \(n\),
 
 Another nice property of cumulants is that they are more likely
 to exists than moments, \(m_n = EX^n\).
-The relationship between cumulants and moments when they both
-exist involves Bell polynomials\cite{?}.
+The relationship between cumulants and moments involves Bell polynomials\cite{?}.
 \[
 Ee^{uX} = \sum_{n=0}^\infty m_n \frac{u^n}{n!}
  = \exp(\sum_{n=1}^\infty \kappa_n \frac{u^n}{n!})
@@ -87,7 +90,7 @@ Given random
 variables \(X\) and \(Y\), we have
 \[\log E e^{iuY} - \log E e^{iuX} = \sum_{n=1}^\infty \Delta\kappa_n (iu)^n/n!\]
 where \((\Delta\kappa_n)\) are the differences of the cumulants 
-of \(Y\) and \(X\), so
+of \(X\) and \(Y\), so
 \[
 Ee^{iuY} = Ee^{iuX}\sum_{n=0}^\infty \frac{B_n}{n!}(iu)^n.
 \]
@@ -105,39 +108,39 @@ G(x) = \sum_{n=0}^\infty (-1)^n \frac{B_n}{n!} F^{(n)}(x)
 \subsection{Hermite Polynomials}
 The derivatives the standard normal cumulative distribution 
 can be computed using Hermite polynomials\cite{?}.
-Recall the Hermite polynomials are the result of the Gram-Schmidt
-process applied to the basis \((x^n)_{n\ge0}\) on the Hilbert space
-having inner product \((f,g) = \int_{-\infty}^\infty f(x)g(x)\,e^{-x^2/2}dx\).
-The standard result is
+%Recall the Hermite polynomials are the result of the Gram-Schmidt
+%process applied to the basis \((x^n)_{n\ge0}\) on the Hilbert space
+%having inner product \((f,g) = \int_{-\infty}^\infty f(x)g(x)\,e^{-x^2/2}dx\).
+The standard result\cite{?} is
 \[
-H_n(x) = (-1)^n e^{x^2/2}\frac{d^n}{dx^n}e^{-x^2/2}.
+H_n(x) = (-1)^n e^{x^2/2}\frac{d^n}{dx^n}e^{-x^2/2}
 \]
-They satisfy the recurence \(H_0(x) = 1\), \(H_1(x) = x\) and
+and they satisfy the recurence \(H_0(x) = 1\), \(H_1(x) = x\) and
 \[
 H_{n+1}(x) = xH_n(x) - n H_{n-1}(x).
 \]
 Note some authors use \(He_n(x)\) instead of \(H_n(x)\).
 
-We have
-\(
-F^{(1)}(x) = F'(x) = e^{-x^2/2}/\sqrt{2\pi} 
-= H_0(x) e^{-x^2/2}/\sqrt{2\pi}.
-\)
-More generally, 
-\[
-F^{(n)}(x) = (-1)^{n-1} H_{n-1}(x) e^{-x^2/2}/\sqrt{2\pi}.
-\]
-
-For appropriate \(\phi\), e.g., exponentially bounded, 
-integration by parts shows 
-\(\int_{-\infty}^\infty \phi(x)\,dF^{(n)}
-= - \int_{-\infty}^\infty \phi'(x)F^{(n)}\,dx
-= - \int_{-\infty}^\infty \phi'(x)\,dF^{(n-1)}\)
-so for any \(k\le n\)
-\[
-\int_{-\infty}^\infty \phi(x)\,dF^{(n)}
-= (-1)^k \int_{-\infty}^\infty \phi^{(k)}(x)\,dF^{(n-k)}.
-\]
+%We have
+%\(
+%F^{(1)}(x) = F'(x) = e^{-x^2/2}/\sqrt{2\pi} 
+%= H_0(x) e^{-x^2/2}/\sqrt{2\pi}.
+%\)
+%More generally, 
+%\[
+%F^{(n)}(x) = (-1)^{n-1} H_{n-1}(x) e^{-x^2/2}/\sqrt{2\pi}.
+%\]
+%
+%For appropriate \(\phi\), e.g., exponentially bounded, 
+%integration by parts shows 
+%\(\int_{-\infty}^\infty \phi(x)\,dF^{(n)}
+%= - \int_{-\infty}^\infty \phi'(x)F^{(n)}\,dx
+%= - \int_{-\infty}^\infty \phi'(x)\,dF^{(n-1)}\)
+%so for any \(k\le n\)
+%\[
+%\int_{-\infty}^\infty \phi(x)\,dF^{(n)}
+%= (-1)^k \int_{-\infty}^\infty \phi^{(k)}(x)\,dF^{(n-k)}.
+%\]
 
 %\subsection{Put Valuation}
 %The forward value of a put option with strike \(k\) is
@@ -192,23 +195,28 @@ G^*(z) = P^*(Y\le z) = Ee^{-\kappa(t,\sigma) + \sigma\sqrt{t}Y}1(Y\le z).
 Letting \(\gamma = \sigma\sqrt{t}\), the cumulants of \(G^*\) can be found from
 \begin{align*}
 \log E e^{uY^*} &= \log E e^{-\kappa(t,\gamma) + \gamma Y} e^{uY}\\
-&= -\kappa(t, \gamma) + \log E e^{(u + \gamma) Y}\\
+&= -\kappa(t, \gamma) + \log E e^{(\gamma + u) Y}\\
 &= -\sum_{n=1}^\infty \kappa_n \frac{\gamma^n}{n!} 
 	+ \kappa_n \frac{(u + \gamma)^n}{n!}\\
-&= \sum_{n=1}^\infty \sum_{k=1}^n \kappa_n \binom{n}{k}
+&= \sum_{n=1}^\infty \sum_{k=0}^{n-1} \kappa_n \binom{n}{k}
 	\frac{\gamma^{n - k}u^k}{n!}\\
-&= \sum_{k=1}^\infty \sum_{n=k}^\infty \kappa_n 
+&= \sum_{k=1}^\infty \sum_{n=k + 1}^\infty \kappa_n 
 	\binom{n}{k}\frac{\gamma^{n - k}u^k}{n!}\\
-&= \sum_{k=1}^\infty \sum_{n=k}^\infty \kappa_n \frac{\gamma^{n-k}}{(n-k)!}
+&= \sum_{k=1}^\infty \sum_{n=k + 1}^\infty \kappa_n \frac{\gamma^{n-k}}{(n-k)!}
 	\frac{u^k}{k!}\\
 &= \sum_{k=1}^\infty 
-	\bigl(\sum_{n=0}^\infty \kappa_{n+k} \frac{\gamma^n}{n!}\bigr)
+	\bigl(\sum_{n=1}^\infty \kappa_{n+k} \frac{\gamma^n}{n!}\bigr)
 	\frac{u^k}{k!}\\
 \end{align*}
 This shows the cumulants of \(Y^*\) are 
-\(\kappa^*_k = \sum_{n=0}^\infty \kappa_{n + k}\gamma^n/n!\)
-so we can compute \(P(Y^* \le z) = G^*(z)\) using the same
+\(\kappa^*_k = \sum_{n=1}^\infty \kappa_{n + k}\gamma^n/n!\)
+so we can also compute \(P(Y^* \le z) = G^*(z)\) using the same
 technique as we did for \(G\).
+
+If \(G\) is standard normal then all cumulants vanish except \(\kappa_2 = 1\). The only nonzero cumulants of \(G^*\) are \(\kappa_1 = \gamma\)
+and \(\kappa_2 = 1\). The corresponding reduced Bell polynomials
+are \(B_n = \gamma^n/n!\) and we see the above formula is just
+the power series expansion of \(G(z - \gamma)\).
 %
 %The Edgeworth series expands the exponential in a power series.
 %\[\exp\bigl(\sum_{n=0}^\infty \Delta\kappa_n (iu)^n/n!\bigr)
@@ -222,7 +230,7 @@ there exists a number \(\gamma\) and a non-decreasing function
 \[
 \log Ee^{iuX} = iu\gamma + \int_{-\infty}^\infty K_u(x)\,dG(x),
 \]
-where \(K_u(x) = (\exp(iux) - 1 - iux)/x^2\). Note the first
+where \(K_u(x) = (e^{iux} - 1 - iux)/x^2\). Note the first
 cumulant of \(X\) is \(\gamma\) and for \(n\ge 2\),
 \(\kappa_n = \int_{-\infty}^\infty x^{n-2}\,dG(x)\). In particular
 the variance of \(X\) is 
