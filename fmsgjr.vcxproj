@@ -81,6 +81,7 @@
   <ItemGroup>
     <ClInclude Include="combinatorial.h" />
     <ClInclude Include="distribution.h" />
+    <ClInclude Include="fmsgjr.h" />
     <ClInclude Include="instrument.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="polynomial.h" />

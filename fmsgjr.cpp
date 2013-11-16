@@ -3,8 +3,6 @@
 #include <cmath>
 #include <iostream>
 #include <random>
-//#include "exp.h"
-//#include "fms_distribution.h"
 #include "fmsgjr.h"
 
 using namespace fms;
@@ -34,6 +32,7 @@ void test_hermite()
 void test_polynomial()
 {
 	test_bell();
+	test_hermite();
 }
 
 template<class T>

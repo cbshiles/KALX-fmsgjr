@@ -26,7 +26,7 @@ namespace fms {
 				F f = forward;
 				S s = volatility;
 				auto gamma = s*sqrt(t);
-				auto z = (log(k/f) + gamma*gamma/2)/gamma;
+				auto z = log(k/f)/gamma + gamma/2;
 
 				return distribution::standard_normal<decltype(z)>::cdf(z);
 			}
@@ -37,14 +37,14 @@ namespace fms {
 				F f = forward;
 				S s = volatility;
 				auto gamma = s*sqrt(t);
-				auto z = (log(k/f) - gamma*gamma/2)/gamma;
+				auto z = log(k/f)/gamma - gamma/2;
 
 				return distribution::standard_normal<decltype(z)>::cdf(z);
 			}
 		};
 
 		// Generalized Jarrow-Rudd model
-		// !!!use iterator for cumulants instead of array!!!
+		// !!!use iterator for cumulants instead of array
 		// f exp(-s^2t/2 + sX_t) kappa(X_i) are cumulant
  		template<class F = double, class S = double>
 		class gjr {
@@ -83,19 +83,19 @@ namespace fms {
 				auto f = forward;
 				auto s = volatility;
 				auto gamma = s*sqrt(t);
-				auto z = log(f/k)/gamma + gamma/2;
+				auto z = log(k/f)/gamma + gamma/2;
 
 				return distribution::standard_normal<decltype(z)>::G(z, 0, kappa.size(), &kappa[0]);
 			}
 
-			// P(F <= k) = E[1(F <= k)]
+			// P*(F <= k) = E*[1(F <= k)]
 			template<class K = double, class T = double>
 			auto cdf_(K k, T t) const -> decltype(forward + volatility + k + t)
 			{
 				auto f = forward;
 				auto s = volatility;
 				auto gamma = s*sqrt(t);
-				auto z = log(f/k)/gamma + gamma/2;
+				auto z = log(k/f)/gamma + gamma/2;
 
 				at(t);
 

@@ -84,8 +84,8 @@ namespace fms {
 				X g(0);
 
 				X _1(1); // (-1)^n
-				// put in policy class
 				X tol(0);
+				// put in policy class!!!
 				X eps(1e-8);
 				for (size_t i = 0; i < 30 && (tol == 0 || fabs(tol) > eps); ++i, _1 *= -1) {
 					X Bi = polynomial::Bell(i, k, kappa, true);
@@ -96,10 +96,11 @@ namespace fms {
 							dG[i] = dg;
 						g += dg;
 
-						if (tol && dg)
-							tol = (std::min)(tol, fabs(dg));
-						else if (!tol && dg)
+						// running min of |dg| once it is nonzero
+						if (tol == 0)
 							tol = fabs(dg);
+						else
+							tol = (std::min)(tol, fabs(dg));
 					}
 				}
 

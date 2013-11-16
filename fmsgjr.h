@@ -23,7 +23,7 @@
 namespace fms {
 
 	template<class F, class S, class K, class T, template<class,class> class M, template<class,class> class I>
-	inline auto value(const M<F,S>& m, const I<K,T>& o)
+	inline auto put(const M<F,S>& m, const I<K,T>& o)
 		-> decltype(m.forward + m.volatility + o.strike + o.expiration)
 	{
 		F f = m.forward;
@@ -31,15 +31,31 @@ namespace fms {
 		K k = o.strike;
 		T t = o.expiration;
 
+		ensure (k <= 0);
+
 		// boundary cases
 		if (1 + f == 1) // zero underlying
 			return k > 0 ? 0 : -k;
 		if (1 + s == 1 || 1 + t == 1) // intrinsic
-			return k > 0 ? (std::max)(f - k, 0.) : (std::max)(-k - f, 0.);
+			return (std::max)(-k - f, 0.);
 		if (1 + k == 1)
-			return k > 0 ? f : 0;
+			return 0;
 
-		return k > 0 ? f*m.cdf(k,t) - k*m.cdf_(k,t) : -k*m.cdf(-k,t) - f*m.cdf_(-k,t);
+		return -k*m.cdf(-k,t) - f*m.cdf_(-k,t);
+	}
+
+	template<class F, class S, class K, class T, template<class,class> class M, template<class,class> class I>
+	inline auto call(const M<F,S>& m, const I<K,T>& o)
+		-> decltype(m.forward + m.volatility + o.strike + o.expiration)
+	{
+		return m.forward - o.strike + put(m, instrument::put<K,T>(-o.strike, o.expiration));
+	}
+
+	template<class F, class S, class K, class T, template<class,class> class M, template<class,class> class I>
+	inline auto value(const M<F,S>& m, const I<K,T>& o)
+		-> decltype(m.forward + m.volatility + o.strike + o.expiration)
+	{
+		return o.strike < 0 ? put(m, o) : call(m, o);
 	}
 
 } // namespace fms
