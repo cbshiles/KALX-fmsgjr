@@ -4,6 +4,7 @@
 #include <cassert>
 #define ensure assert
 #endif
+#include <limits>
 #include <map>
 #include <vector>
 
@@ -13,7 +14,7 @@ namespace fms {
 		// memoized n!
 		inline long long factorial(size_t n)
 		{
-			static std::vector<long long> n_ = {
+			static std::vector<unsigned long long> n_ = {
 				1, 1, 2, 6, 24, 120, 
 				720, 5040, 40320, 362880, 3628800, 
 				39916800, 479001600, 6227020800, 87178291200, 1307674368000, 
@@ -33,20 +34,29 @@ namespace fms {
 		// memoized C(n,k) = n!/k!(n - k)!
 		inline size_t choose(size_t n, size_t k) {
 			ensure (k <= n);
-			static std::map<std::pair<size_t,size_t>,size_t> cnk_; // = {{{0,0},0},...
+			static std::vector<std::vector<unsigned long long>> cnk_ = {
+				{1},
+				{1, 1},
+				{1, 2, 1}
+			};
 
-			if (k == 0 || k == n) {
-				return 1;
+			if (n >= cnk_.size()) {
+				size_t n_ = cnk_.size();
+				cnk_.resize(n + 1);
+				for (size_t m = n_; m <= n; ++m) {
+					cnk_[m].resize(m + 1);
+					cnk_[m][0] = 1;
+					cnk_[m][m] = 1;
+					for (size_t j = 1; j < m; ++j) {
+						unsigned long long cmj_ = cnk_[m-1][j-1];
+						unsigned long long cmj = cnk_[m-1][j];
+						ensure (cmj_ < (std::numeric_limits<unsigned long long>::max)() - cmj);
+						cnk_[m][j] = cmj_ + cmj;
+					}
+				}
 			}
-			else {
-				auto nk = std::make_pair(n,k);
-				auto i = cnk_.find(nk);
-
-				if (i != cnk_.end())
-					return i->second;
 				
-				return cnk_[nk] = choose(n - 1, k - 1) + choose(n - 1, k);
-			}
+			return cnk_[n][k];
 		};
 
 	} // combinatorial

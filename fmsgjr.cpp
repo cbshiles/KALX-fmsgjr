@@ -4,6 +4,7 @@
 #include <iostream>
 #include <random>
 #include "fmsgjr.h"
+#include "root1d.h"
 
 using namespace fms;
 static std::default_random_engine dre;
@@ -35,6 +36,76 @@ void test_polynomial()
 	test_hermite();
 }
 
+void test_normal()
+{
+	double max, min, eps;
+	eps = std::numeric_limits<double>::epsilon();
+
+	max = -std::numeric_limits<double>::max();
+	min = std::numeric_limits<double>::max();
+
+	// 
+	double ed_66[] = {
+		-1.000000000000000, 
+		-0.9999999999984625, 
+		-0.99999998458274210, 
+		-0.99997790950300141, 
+		-0.99532226501895273, 
+		-0.84270079294971487, 
+		0, 0.84270079294971487, 
+		0.99532226501895273, 
+		0.99997790950300141, 
+		0.99999998458274210, 
+		0.9999999999984625, 
+		1.000000000000000
+	};
+	for (int x = -6; x <= 6; x += 1) {
+		double dy, y, y_;
+
+		y = erf(x);
+		y_ = ed_66[x + 6];
+		dy = y - y_;
+		max = (std::max<double>)(max, dy);
+		min = (std::min<double>)(min, dy);
+	}
+	ensure (max < eps && min > -eps);
+
+	// Table[N[Erfc[-x/Sqrt[2]]/2,17], {x, -6, 6}]
+	// normaldist(x) x = -6,...,6
+	double nd_66[] = {
+		9.8658764503769814e-10,
+		2.8665157187919391E-7,
+		0.000031671241833119921,
+		0.0013498980316300945,
+		0.022750131948179207,
+		0.15865525393145705,
+		0.50000000000000000,
+		0.84134474606854295,
+		0.97724986805182079,
+		0.99865010196836991,
+		0.99996832875816688,
+		0.99999971334842812,
+		0.99999999901341235
+	};
+
+	max = -std::numeric_limits<double>::max();
+	min = std::numeric_limits<double>::max();
+	for (int x = -6; x <= 6; x += 1) {
+		double dy, y, y_;
+
+		y = distribution::standard_normal<>::cdf(x);
+		y_ = nd_66[x + 6];
+		dy = y - y_;
+		max = (std::max<double>)(max, dy);
+		min = (std::min<double>)(min, dy);
+	}
+	ensure (max < eps && min > -eps);
+}
+void test_distribution()
+{
+	test_normal();
+}
+
 template<class T>
 void test_value()
 {
@@ -62,10 +133,32 @@ void test_value()
 	v = value<T>(mb, instrument::option<>(k,t));
 }
 
+using namespace fms::root1d;
+
+void test_root1d()
+{
+	double abs = 1e-11, rel = 1e-8;
+	double x0 = 1, x1 = 2;
+	state<> s(abs, rel, 100);
+	auto f = [](double x) { return x*x - 2; };
+
+	s.bracket(f, 1);
+
+	while (!s.test_inverval()) {
+		s.secant(f);
+	}
+
+	size_t n = s.x.size();
+
+//	solution<> s = solve([](double x) { return x*x - 2; }, secant(x0, x1));
+}
+
 int main()
 {
 	try {
+		test_root1d();
 		test_polynomial();
+		test_distribution();
 		test_value<double>();
 	}
 	catch(const std::exception& ex) {

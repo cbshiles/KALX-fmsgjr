@@ -4,6 +4,8 @@
 namespace fms{
 	namespace polynomial {
 
+
+
 		template<class X>
 		inline X Bell(size_t n, size_t nx, const X* x, bool reduced = false)
 		{

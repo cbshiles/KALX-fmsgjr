@@ -19,6 +19,9 @@
     <ClInclude Include="fmsgjr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="root1d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
