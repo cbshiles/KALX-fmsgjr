@@ -1,0 +1,130 @@
+% dbht.tex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx} % support the \includegraphics command and optio
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+\title{Double Barrier Hitting Time}
+\author{Keith A. Lewis}
+
+\begin{document}
+\maketitle
+
+\section{Notation}
+
+Let \((B_t)_{t\ge0}\) be standard Brownian motion and define
+\[
+T = \inf\{t\ge0 : B_t > a\  {\rm or}\  B_t < -b\}
+\] where \(a\) and \(b\) are positive. 
+%Define \(T_a = \inf\{t \ge0 0 : B_t > a\}\)
+%and \(T_b = \inf\{t \ge0 0 : B_t < -b\}\). 
+
+
+\section{Approximation}
+For \(\sigma\sqrt{t}\) is small, lognormal and normal models have
+similar statistical properties 
+\(e^{-\sigma^2t/2 + \sigma B_t}\approx (1 + \sigma)B_t\).
+They both have the same expected value and the variance
+\(e^{\sigma^2t} - 1 \approx \sigma^2 t\). Taking stock
+price \(S_t = s(1 + \sigma B_t)\) define \(T_\epsilon\)
+by
+\[
+T_\epsilon = \inf\{t : 
+\max_{0\le s\le t} s(1 + \sigma B_s) > s(1 + \epsilon)\ {\rm or}\ 
+\min_{0\le s\le t} s(1 + \sigma B_s) < s(1 - \epsilon)\}.
+\]
+We have
+\begin{align*}
+P(T < t) 
+&= P(\max B_t > \epsilon/\sigma\ 
+{\rm or}\ 
+\min B_t < -\epsilon/\sigma)\\
+&= P(E_\epsilon) + P(E_{-\epsilon}) - P(E_\epsilon\cap E_{-\epsilon})\\
+\end{align*}
+where \(E_a\) is the event \(\max B > a/\sigma\) and \(E_{-b}\) is
+the event \(\min B < -b/\sigma\).
+
+When \(\sigma\sqrt{t}\) is small we have
+\(P(E_a\cap E_{-b}) \approx 0\) so
+\begin{align*}
+P(T < t) &\approx P(\max B > a) + P(\min B < -b)\\
+	&= 2P(B > a) + P(\max B > b)\\
+	&= 2(P(B > a) + P(B > b))\\
+\end{align*}
+
+If \(a = b = \epsilon/\sigma\) then 
+\(P(T < t) = 4P(B_t > a) = 4(1 - N(\epsilon/\sigma\sqrt{t}))\)
+where \(N\) is the standard normal distribution. The inverse
+is \(t = (\epsilon/(\sigma N^{-1}(1 - p/4))^2\). 
+To get a proper cdf  we should use
+\(P(T < t) = \min\{4P(B_t > a), 1\}\) so \(T\) is
+bounded by \((N^{-1}(3/4)\epsilon/\sigma)^2\). For
+\(\epsilon = 0.01\) and \(\sigma = 0.2\) this works out
+to about a quarter of a day.
+
+%\section{Symmetric Barriers}
+%Using the fact that if
+%\[
+%u(t,x) = \sum_{k=0}^n (-1/2)^k p^{(2k)}(x) t^k/k!
+%\]
+%for any polynomial \(p\), then \(u(t, B_t)\) is a martingale
+%we can calculate the moments of \(T\) by taking \(p(x) = x^{2n}\).
+%
+
+
+%For \(n = 1\) we have \(u(t,x) = x^2 + (-1/2)2t = x^2 - t\).
+%Using the optional stopping theorem
+%\(0 = a^2 - ET\) so \(ET = a^2\).
+%
+%For \(n = 2\) we have 
+%\begin{align*}
+%u(t,x) &= x^4 + (-1/2)4\cdot 3x^2 t + (1/4)4\cdot 3\cdot 2 t^2/2\\
+%	&= x^4 - 6x^2t + 3t^2
+%\end{align*}
+%and \(0 = a^4 - 6a^2ET + 3ET^2\) so \(ET^2 = (5/3)a^4\).
+%
+%For \(n = 3\) we have
+%\begin{align*}
+%u(t,x) &= x^6 + (-1/2)6\cdot 5x^4t + (1/4)6\cdot 5 \cdot 4\cdot 3x^2t^2 + (-1/8)6!t^3/3!\\
+%&= x^6 - 15x^4t + 30x^2t^2 - 15t^3
+%\end{align*}
+%and \(0 = a^6 - 15a^4ET + 30a^2ET^2 - 15ET^3\) so
+%\(0 = a^6 - 15a^6 + 50a^6 - 15ET^3\), hence
+%\(ET^3 = (12/5)a^6\).
+%
+%For \(n = 4\) we have
+%\begin{align*}
+%u(t,x) &= x^8 \\
+%&+ (-1/2)8\cdot 7x^6t \\
+%&+ (1/4)8\cdot 7 \cdot 6\cdot 5x^4t^2 \\
+%&+ (-1/8)(8!/2!)x^2t^3/3!\\
+%&+ (1/16)8!t^4/4!\\
+%&= x^8 -28a^6t + 84x^4t^2 - 420x^2t^3 + 105t^4\\
+%\end{align*}
+%and \(0 = a^8(1 - 28 + 84(5/2) - 420(12/5)) + 105ET^4\)
+%so \(ET^4 = (55/7)a^8\).
+%
+%If \(p(x) = x^{2n}\) then \(p^{(2k)}(x) = (2n)!/(2(n-k))! x^{2(n-k)}\) so
+%\[
+%u_k(t,x) = \sum_{k=0}^n (-1/2)^k (2n)!/(2(n-k))! x^{2(n-k)}t^k/k!
+%\]
+%and
+%\[
+%0 = \sum_{k=0}^n (-1/2)^k (2n)!/(2(n-k))! a^{2(n-k)}E[T^k]/k!
+%\]
+%It is simple to show \(ET^k = \tau_ka^{2k}\) for constant \(\tau_k\) hence
+%\[
+%0 = a^{2n}\sum_{k=0}^n (-1/2)^k (2n)!/(2(n-k))! \tau_k/k!
+%\]
+%so
+%\begin{align*}
+%\tau_n &= (-2)^n n! \sum_{k=0}^{n-1} (-1/2)^k (2n)!/(2(n-k))! \tau_k/k!\\
+%	&= \sum_{k=0}^{n-1} (-2)^{n-k} \frac{(2n)!}{(2(n-k))!}\frac{n!}{k!} \tau_k\\
+%\end{align*}
+%
+
+
+
+\end{document}
