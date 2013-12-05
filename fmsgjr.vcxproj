@@ -150,7 +150,6 @@
     <ClInclude Include="instrument.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="polynomial.h" />
-    <ClInclude Include="root1d.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="fmsgjr.cpp" />

@@ -222,7 +222,8 @@ the Taylor series expansion of \(G(z - \gamma)\).
 %\[\exp\bigl(\sum_{n=0}^\infty \Delta\kappa_n (iu)^n/n!\bigr)
 %= \sum_{k=0}^\infty (\sum_{n=0}^\infty \Delta\kappa_n (iu)^n/n!)^k/k!\]
 %
-\section{K-model}
+\subsection{Common distributions}
+
 Kolmogorov's version of the L\'evy-Khintchine theorem\cite{?}
 states that if a random variable \(X\) is infinitely divisible
 there exists a number \(\gamma\) and a non-decreasing function
@@ -236,19 +237,24 @@ cumulant of \(X\) is \(\gamma\) and for \(n\ge 2\),
 the variance of \(X\) is 
 \(\int_{-\infty}^\infty dG(x) = G(\infty) - G(-\infty)\).
 
-The K-model takes \(\gamma = 0\) and \(G\) of the form
-\[
-G(x) =
-\begin{cases}
-a e^{x/\alpha} &x < 0\\
-1 - be^{-x/\beta} & x > 0\\
-\end{cases}
-\]
-Note \(G\) jumps by \(1 - a - b\) at the origin. If \(a = b = 0\)
-this reduces to a standard normal distribution.
+We can approximate any \(G\) using piecewise constant
+step functions. If \(dG\) is a point mass at \(a\)
+then \(\kappa_n = a^{n-2}\) if \(a\not=0\) so
+the cumulants of \(dG = \delta_0 + \sum_j \alpha_j \delta_{a_j}\) are \(\kappa_2 = 1 + \sum_j \alpha_j^2\), \(\kappa_n = \sum_j \alpha^n a^{n - 2}\), \(n\ge2\).
 
-The cumulants are simple to compute: \(\kappa_1 = 0\), \(\kappa_2 = 1\),
-and \(\kappa_{n+2} = (a(-\alpha)^n + b\beta^n)n!\) for \(n > 1\).
+%The K-model takes \(\gamma = 0\) and \(G\) of the form
+%\[
+%G(x) =
+%\begin{cases}
+%a e^{x/\alpha} &x < 0\\
+%1 - be^{-x/\beta} & x > 0\\
+%\end{cases}
+%\]
+%Note \(G\) jumps by \(1 - a - b\) at the origin. If \(a = b = 0\)
+%this reduces to a standard normal distribution.
+%
+%The cumulants are simple to compute: \(\kappa_1 = 0\), \(\kappa_2 = 1\),
+%and \(\kappa_{n+2} = (a(-\alpha)^n + b\beta^n)n!\) for \(n > 1\).
 
 \section{Remarks}
 The Gram-Charlier A series expands the quotients of cumulative

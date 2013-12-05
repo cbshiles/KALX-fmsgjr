@@ -4,7 +4,6 @@
 #include <iostream>
 #include <random>
 #include "fmsgjr.h"
-#include "root1d.h"
 
 using namespace fms;
 static std::default_random_engine dre;
@@ -133,30 +132,9 @@ void test_value()
 	v = value<T>(mb, instrument::option<>(k,t));
 }
 
-using namespace fms::root1d;
-
-void test_root1d()
-{
-	double abs = 1e-11, rel = 1e-8;
-	double x0 = 1, x1 = 2;
-	state<> s(abs, rel, 100);
-	auto f = [](double x) { return x*x - 2; };
-
-	s.bracket(f, 1);
-
-	while (!s.test_inverval()) {
-		s.secant(f);
-	}
-
-	size_t n = s.x.size();
-
-//	solution<> s = solve([](double x) { return x*x - 2; }, secant(x0, x1));
-}
-
 int main()
 {
 	try {
-		test_root1d();
 		test_polynomial();
 		test_distribution();
 		test_value<double>();
