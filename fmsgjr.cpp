@@ -8,6 +8,61 @@
 using namespace fms;
 static std::default_random_engine dre;
 
+#include "dual.h"
+
+void test_dual()
+{
+	dual::number<> x{1,2,3}, y{2,3}, z{4};
+
+	x += y;
+	ensure (x.size() == 3);
+	ensure (x[0] == 3);
+	ensure (x[1] == 5);
+	ensure (x[2] == 3);
+
+	z += x;
+	ensure (z.size() == 3);
+	ensure (z[0] == 3 + 4);
+	ensure (z[1] == 5);
+	ensure (z[2] == 3);
+
+	x = {1,2};
+	y = {3,4};
+	z = x;
+	z *= y;
+	// (1 + 2J)(3 + 4J) = 3 + (4 + 6)J + 8J^2
+	ensure (z.size() == 3);
+	ensure (z[0] == 3);
+	ensure (z[1] == 4 + 6);
+	ensure (z[2] == 8);
+
+	z = x + y;
+	z = z + 1.;
+	x = 2. + z;
+
+	double a(2);
+	dual::number<> u{a, 1};
+	dual::number<> u3;
+	u3 = u*u*u;
+	ensure (u3[0] == a*a*a);
+	ensure (u3[1] == 3*a*a);
+	ensure (u3[2] == 6*a/2);
+	ensure (u3[3] == 6./(2*3));
+
+	ensure (u3(0) == a*a*a);
+	ensure (u3(1) == 3*a*a);
+	ensure (u3(2) == 6*a);
+	ensure (u3(3) == 6.);
+}
+
+void test_combinatorial()
+{
+	combinatorial::factorial_iterator fi;
+	std::vector<long long> v(5);
+	std::generate(v.begin(), v.end(), [&fi](void) { return *fi++; });
+	
+}
+
 void test_bell()
 {
 	using polynomial::Bell;
@@ -135,6 +190,8 @@ void test_value()
 int main()
 {
 	try {
+		test_dual();
+		test_combinatorial();
 		test_polynomial();
 		test_distribution();
 		test_value<double>();

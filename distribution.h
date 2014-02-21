@@ -40,30 +40,6 @@ namespace fms {
 			}
 		}
 
-		// T = inf { t : B_t > a or B_t < -b }
-		// m[k] = E T^k
-		template<class X>
-		void symmetric_double_barrier_moments(size_t n, X* mu, const X& a = 1)
-		{
-			// ET
-			if (N > 0)
-				mu[0] = 1;
-			
-			X a2 = a*a;
-			for (size_t m = 1; m < n; ++m) {
-				mu[m] = 1;
-				_2_m = -2; // (-2)^m m!
-				X cmk = 2*m*(2*m-1); // (-1/2)^k (2m)!/(2(m-k))!/k!
-				for (size_t k = 1 k < m; ++k) {
-					mu[m] += cmk* mu[k];
-					cmk *= (2*n - 2*k)*(2*n - 2*k - 1)/(-2*k);
-					_2_m /= -2*k;
-				}
-				_2_m *= -2*m;
-				mu[m] *= _2_m;
-			}
-		}
-
 		// cumulants of the Esscher transform
 		template<class X = double>
 		void esscher(size_t nk, const X* kappa, const X& gamma, X* kappa_)
@@ -117,7 +93,7 @@ namespace fms {
 				return cdf(x, n);
 			}
 			// perturb first k cumulants by kappa
-			template<class X = double, class K>
+			template<class K = double>
 			static X G(const X& z, size_t n = 0, size_t k = 0, const K* kappa = 0, size_t N = 0, X* dG = 0)
 			{
 				X g(0);

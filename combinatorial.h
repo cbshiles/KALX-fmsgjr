@@ -4,6 +4,7 @@
 #include <cassert>
 #define ensure assert
 #endif
+#include <iterator>
 #include <limits>
 #include <map>
 #include <vector>
@@ -11,6 +12,40 @@
 namespace fms {
 
 	namespace combinatorial {
+
+		class factorial_iterator : public std::iterator<std::forward_iterator_tag, long long> {
+			long long i_, n_;
+		public:
+			factorial_iterator()
+				: i_(0), n_(1)
+			{ }
+			~factorial_iterator()
+			{ }
+
+			long long operator*() const
+			{
+				return n_;
+			}
+			factorial_iterator& operator++()
+			{
+				++i_;
+				n_ *= i_;
+
+				return *this;
+			}
+			factorial_iterator operator++(int)
+			{
+				factorial_iterator fi(*this);
+
+				++i_;
+				n_ *= i_;
+
+				return fi;
+			}
+
+
+		};
+
 		// memoized n!
 		inline long long factorial(size_t n)
 		{
