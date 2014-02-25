@@ -53,6 +53,17 @@ void test_dual()
 	ensure (u3(1) == 3*a*a);
 	ensure (u3(2) == 6*a);
 	ensure (u3(3) == 6.);
+
+	dual::number<> v({1, 2}, 3);
+	dual::number<> v_ = v.inv();
+	ensure (v_[0] == 1);
+	ensure (v_[1] == -2);
+	ensure (v_[2] == 4);
+
+	dual::number<> vv = v*v_;
+	ensure (vv[0] == 1);
+	ensure (vv[1] == 0);
+	ensure (vv[2] == 0);
 }
 
 void test_combinatorial()
