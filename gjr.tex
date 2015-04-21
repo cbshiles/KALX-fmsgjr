@@ -1,5 +1,6 @@
 % gjr.tex
 \documentclass[11pt]{article}
+\usepackage{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx} % support the \includegraphics command and optio
 \usepackage[fleqn]{amsmath}
@@ -14,7 +15,7 @@
 
 % \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
 
-\title{Option Valuation}
+\title{Generalized Jarrow-Rudd}
 \author{Keith A. Lewis}
 \date{\today}
 
@@ -28,8 +29,8 @@ log of the the risk-neutral distribution of the underlying to
 achieve this.
 
 Instead of working with the difference of the cumulants from a lognormal
-distribution as in Jarrow-Rudd \cite{?} we work with the difference of
-the cumulants of a normal distribution. 
+distribution as in Jarrow-Rudd \cite{JarRud1982} we work with the difference of
+the cumulants from a normal distribution. 
 This is more natural since the cumulants of a normal distribution are
 easier to interpret.
 
@@ -45,8 +46,7 @@ Section 3 uses an Edgeworth expansion to give an explicit formula for
 the cumulative distribution function of the perturbed distribution.
 Option valuation is considered in section 4. We show how the
 Esscher transform can be calculated using the same method as in
-section 3. The K-model is described in section 5 as a parameterization
-that seems to fit market data well. The last section collects some
+section 3. The last section collects some
 general remarks.
 
 \section{Cumulants}
@@ -72,8 +72,9 @@ times a random variable is
 \(\kappa_n(cX) = c^n\kappa_n(X)\).
 
 Another nice property of cumulants is that they are more likely
-to exists than moments, \(m_n = EX^n\). (Why?)
-The relationship between cumulants and moments involves Bell polynomials\cite{?}.
+to exists than moments, \(m_n = EX^n\).
+The relationship between cumulants and moments involves Bell
+polynomials\cite{Bel1934}.
 \[
 Ee^{uX} = \sum_{n=0}^\infty m_n \frac{u^n}{n!}
  = \exp(\sum_{n=1}^\infty \kappa_n \frac{u^n}{n!})
@@ -83,8 +84,8 @@ where \(B_n(\kappa_1,\dots,\kappa_n)\) is the \(n\)-th complete
 Bell polynomial.
 This is just a special case of the
 Fa\`a di Bruno formula first proved by Louis Fran\c{c}ois Antoine
-Arborgast in 1800\cite{Arborgast}.
-Bell polynomials satisfy the recurrence \cite{Comtet} \(B_0 = 1\) and
+Arborgast in 1800\cite{Arb1800}.
+Bell polynomials satisfy the recurrence \cite{Com1974} \(B_0 = 1\) and
 \[
 B_{n+1}(x_1,\dots,x_{n+1}) = \sum_{k=0}^n \binom{n}{k}
 B_{n - k}(x_1,\dots, x_{n - k}) x_{k+1}.
@@ -96,28 +97,29 @@ If \(X\) is normal then \(Ee^X = e^{E X + \Var(X)/2}\) so
 \(Ee^{uX} = e^{uEX + u^2\Var(X)/2}\) showing the
 third and higher order cumulants vanish. If the cumulants of
 a random variable vanish after some some point, then it must
-be normal\cite{?}. Something to keep in mind with computer
+be normal\cite{Luk1970} (Theorem 7.3.5).
+Something to keep in mind with computer
 implementations.
 \end{example}
 \begin{example}[Poisson]
 If \(X\) is Poisson
 with mean \(\mu\) then \(\kappa_n = \mu\) for all \(n\).
 \end{example}
-\begin{example}[Compound Poisson]
-If \(Y\) is Poisson with mean \(\mu\) and \(Z_j\) are
-independent and identically distributed, define
-\(X = \sum_{j=1}^{Y} Z_j\). The cumulants of \(X\)
-are \(\kappa_n = ?\).
-\end{example}
-\begin{align*}
-Ee^{uX} &= \sum_{k=0}^\infty Ee^{u(Z_1 + \cdots Z_k)}\mu^k/k!\,e^{-\mu}\\
-&= \sum_{k=0}^\infty (Ee^{u Z_1})^k\mu^k/k!\,e^{-\mu}\\
-&= \sum_{k=0}^\infty (Ee^{u Z_1}\mu)^k/k!\,e^{-\mu}\\
-&= e^{\mu Ee^{u Z_1}}\,e^{-\mu}\\
-&= e^{\mu (Ee^{u Z_1} - 1)}\\
-\end{align*}
-Define \(\lambda(u) = \log Ee^{uZ_1}\). Then
-\(\log E e^{uX} = \mu(e^{\lambda(u)} -1)\).
+%\begin{example}[Compound Poisson]
+%If \(Y\) is Poisson with mean \(\mu\) and \(Z_j\) are
+%independent and identically distributed, define
+%\(X = \sum_{j=1}^{Y} Z_j\). The cumulants of \(X\)
+%are \(\kappa_n = ?\).
+%\end{example}
+%\begin{align*}
+%Ee^{uX} &= \sum_{k=0}^\infty Ee^{u(Z_1 + \cdots Z_k)}\mu^k/k!\,e^{-\mu}\\
+%&= \sum_{k=0}^\infty (Ee^{u Z_1})^k\mu^k/k!\,e^{-\mu}\\
+%&= \sum_{k=0}^\infty (Ee^{u Z_1}\mu)^k/k!\,e^{-\mu}\\
+%&= e^{\mu Ee^{u Z_1}}\,e^{-\mu}\\
+%&= e^{\mu (Ee^{u Z_1} - 1)}\\
+%\end{align*}
+%Define \(\lambda(u) = \log Ee^{uZ_1}\). Then
+%\(\log E e^{uX} = \mu(e^{\lambda(u)} -1)\).
 \begin{example}[Exponential]
 If \(X\) is exponential with mean \(\mu\) then
 \(\kappa_n = (n - 1)!\mu^n\).
@@ -127,17 +129,17 @@ If \(X\) is gamma with mean \(\alpha/\beta\) and variance
 \(\alpha/\beta^2\) then \(\kappa_n = (n - 1)!\alpha/\beta^n\).
 Note gamma is exponential when
 \(\alpha = 1\) and \(\beta = 1/\mu\).
-\begin{align*}
-Ee^{uX} &= \int_0^\infty e^{ux} x^{\alpha-1} e^{-\beta x}
-\frac{\beta^\alpha}{\Gamma(\alpha)}\,dx\\
-&= \int_0^\infty x^{\alpha-1} e^{-(\beta -u) x}
-\frac{\beta^\alpha}{\Gamma(\alpha)}\,dx\\
-&= \frac{\Gamma(\alpha)}{(\beta - u)^\alpha} \frac{\beta^\alpha}{\Gamma(\alpha)}\\
-&= (1 - u/\beta)^{-\alpha}\\
-\end{align*}
-so
-\(
-\log E e^{uX} = \alpha \sum_{n=1}^\infty (u/\beta)^n/n\).
+%\begin{align*}
+%Ee^{uX} &= \int_0^\infty e^{ux} x^{\alpha-1} e^{-\beta x}
+%\frac{\beta^\alpha}{\Gamma(\alpha)}\,dx\\
+%&= \int_0^\infty x^{\alpha-1} e^{-(\beta -u) x}
+%\frac{\beta^\alpha}{\Gamma(\alpha)}\,dx\\
+%&= \frac{\Gamma(\alpha)}{(\beta - u)^\alpha} \frac{\beta^\alpha}{\Gamma(\alpha)}\\
+%&= (1 - u/\beta)^{-\alpha}\\
+%\end{align*}
+%so
+%\(
+%\log E e^{uX} = \alpha \sum_{n=1}^\infty (u/\beta)^n/n\).
 
 
 \end{example}
@@ -165,11 +167,12 @@ G(x) = \sum_{n=0}^\infty (-1)^n \frac{B_n}{n!} F^{(n)}(x)
 
 \subsection{Hermite Polynomials}
 The derivatives the standard normal cumulative distribution 
-can be computed using Hermite polynomials\cite{?}.
-%Recall the Hermite polynomials are the result of the Gram-Schmidt
-%process applied to the basis \((x^n)_{n\ge0}\) on the Hilbert space
-%having inner product \((f,g) = \int_{-\infty}^\infty f(x)g(x)\,e^{-x^2/2}dx\).
-The standard result\cite{?} is
+can be computed using Hermite polynomials\cite{AbrSte1964}
+pp. 793--801.
+Recall the Hermite polynomials are the result of the Gram-Schmidt
+process applied to the basis \((x^n)_{n\ge0}\) on the Hilbert space
+having inner product \((f,g) = \int_{-\infty}^\infty f(x)g(x)\,e^{-x^2/2}dx\).
+The standard results are
 \[
 H_n(x) = (-1)^n e^{x^2/2}\frac{d^n}{dx^n}e^{-x^2/2}
 \]
@@ -214,7 +217,7 @@ The forward value of a put on a stock \(S\) with strike \(k\) is
 \[
 E\max\{k - S,0\} = k P(S \le k) - E S\,P^*(S \le k)
 \]
-where \(dP^*/dP = S/ES\) is the {\em Esscher transform}\cite{?}.
+where \(dP^*/dP = S/ES\) is the {\em Esscher transform}\cite{Ess1932}.
 This is the analog of 
 \(E\max\{k - S,0\} = kN(-d_2) - sN(-d_1)\)
 when \(S\) is lognormal.
@@ -225,7 +228,7 @@ where \((B_t)\) is standard Brownian motion and \(t\) is time
 in years. Note \(ES = s\) and \(S \le k\)
 if and only if \(B_t/\sqrt{t} \le z\) where
 \(z = (\log k/s + \sigma^2 t/2)/\sigma\sqrt{t}\). In the usual
-notation \(z = -d_2\).
+notation, \(z = -d_2\).
 
 Letting \(X = B_t/\sqrt{t}\) and so \(F = N\) is the standard
 normal cumulative distributing function we have
@@ -281,55 +284,55 @@ the Taylor series expansion of \(G(z - \gamma)\).
 %= \sum_{k=0}^\infty (\sum_{n=0}^\infty \Delta\kappa_n (iu)^n/n!)^k/k!\]
 %
 
-\subsection{Computations}
-Explicit formulas the first few Bell polynomials:
-\begin{align*}
-B_0 &= 1\\
-B_1 &= x_1\\
-B_2 &= B_1 x_1 + B_0 x_2\\
-&= x_1^2 + x_2\\
-B_3 &= B_2 x_1 + 2B_1 x_2 + B_0 x_3\\
-&= x_1^3 + x_1 x_2 + 2x_1 x_2 + x_3\\
-&= x_1^3 + 3x_1 x_2 + x_3\\
-B_4 &= B_3 x_1 + 3 B_2 x_2 + 3 B_1 x_3 + B_0 x_4\\
-&= (x_1^3 + 3x_1 x_2 + x_3) x_1  + 3 (x_1^2 + x_2)x_2 + 3 x_1 x_3 + x_4\\
-&= x_1^4 + 6x_1^2 x_2 + 4 x_1 x_3 + 3x_2^2 + x_4\\
-\end{align*}
-Explicit formulas for the first few Hermite polynomials:
-\begin{align*}
-H_0 &= 1\\
-H_1 &= x\\
-H_2 &= x^2 - 1\\
-H_3 &= x^3 - x\\
-H_4 &= x^4 - 6x^2 + 3\\
-H_5 &= x^5 - 10x^3 + 15x\\
-H_6 &= x^6 - 15x^4 + 45x^2 - 15\\
-\end{align*}
-
-Assuming \(\kappa_1 = \kappa_2 = 0\) the first few terms of the Edgeworth expansion are:
-\begin{align*}
-G(x) &= \sum_{n=0}^\infty (-1)^n B_n F^{(n)}(x)/n!\\
-&= F(x) - B_1 F'(x) + B_2F''(x)/2 - B_3F^{(3)}(x)/6 + B_4F^{(4)}/24\\
-&= F(x) + (-\kappa_3 (x^2 - 1)/6 - \kappa_4 (x^3-x)/24)e^{-x^2/2}/\sqrt{2\pi}\\
-\end{align*}
-The distribution is unimodal if and only if the second derivative has exactly one root.
-\begin{align*}
-G''(x) &= \sum_{n=0}^\infty (-1)^n B_n F^{(n+1)}(x)/n!\\
-&= F^{(2)}(x) - B_1 F^{(3)}(x) + B_2F^{(4)}(x)/2 - B_3F^{(5)}(x)/6 + B_4F^{(6)}/24\\
-&= (-x - \kappa_3 (x^4 - 6x^2 + 3)/6
-	 - \kappa_4 (x^5 - 10x^3 + 15x)/24)e^{-x^2/2}/\sqrt{2\pi}\\
-\end{align*}
-
+%\subsection{Computations}
+%Explicit formulas the first few Bell polynomials:
+%\begin{align*}
+%B_0 &= 1\\
+%B_1 &= x_1\\
+%B_2 &= B_1 x_1 + B_0 x_2\\
+%&= x_1^2 + x_2\\
+%B_3 &= B_2 x_1 + 2B_1 x_2 + B_0 x_3\\
+%&= x_1^3 + x_1 x_2 + 2x_1 x_2 + x_3\\
+%&= x_1^3 + 3x_1 x_2 + x_3\\
+%B_4 &= B_3 x_1 + 3 B_2 x_2 + 3 B_1 x_3 + B_0 x_4\\
+%&= (x_1^3 + 3x_1 x_2 + x_3) x_1  + 3 (x_1^2 + x_2)x_2 + 3 x_1 x_3 + x_4\\
+%&= x_1^4 + 6x_1^2 x_2 + 4 x_1 x_3 + 3x_2^2 + x_4\\
+%\end{align*}
+%Explicit formulas for the first few Hermite polynomials:
+%\begin{align*}
+%H_0 &= 1\\
+%H_1 &= x\\
+%H_2 &= x^2 - 1\\
+%H_3 &= x^3 - x\\
+%H_4 &= x^4 - 6x^2 + 3\\
+%H_5 &= x^5 - 10x^3 + 15x\\
+%H_6 &= x^6 - 15x^4 + 45x^2 - 15\\
+%\end{align*}
+%
+%Assuming \(\kappa_1 = \kappa_2 = 0\) the first few terms of the Edgeworth expansion are:
+%\begin{align*}
+%G(x) &= \sum_{n=0}^\infty (-1)^n B_n F^{(n)}(x)/n!\\
+%&= F(x) - B_1 F'(x) + B_2F''(x)/2 - B_3F^{(3)}(x)/6 + B_4F^{(4)}/24\\
+%&= F(x) + (-\kappa_3 (x^2 - 1)/6 - \kappa_4 (x^3-x)/24)e^{-x^2/2}/\sqrt{2\pi}\\
+%\end{align*}
+%The distribution is unimodal if and only if the second derivative has exactly one root.
+%\begin{align*}
+%G''(x) &= \sum_{n=0}^\infty (-1)^n B_n F^{(n+1)}(x)/n!\\
+%&= F^{(2)}(x) - B_1 F^{(3)}(x) + B_2F^{(4)}(x)/2 - B_3F^{(5)}(x)/6 + B_4F^{(6)}/24\\
+%&= (-x - \kappa_3 (x^4 - 6x^2 + 3)/6
+%	 - \kappa_4 (x^5 - 10x^3 + 15x)/24)e^{-x^2/2}/\sqrt{2\pi}\\
+%\end{align*}
+%
 
 \subsection{L\'evy Processes}
 
-Let \(X = aN + bP + c\) where \(N\) is standard normal and \(P\)
-is Poisson with mean \(\mu\).
+%Let \(X = aN + bP + c\) where \(N\) is standard normal and \(P\)
+%is Poisson with mean \(\mu\).
 
-\(EX = b\mu + c\) and \(\Var X = a^2 + b^2\). Taking
-\(b = \sqrt{1 - a^2}\)
+%\(EX = b\mu + c\) and \(\Var X = a^2 + b^2\). Taking
+%\(b = \sqrt{1 - a^2}\)
 
-Kolmogorov's version of the L\'evy-Khintchine theorem\cite{?}
+Kolmogorov's version of the L\'evy-Khintchine theorem\cite{Kol1992}
 states that if a random variable \(X\) is infinitely divisible
 there exists a number \(\gamma\) and a non-decreasing function
 \(G\) defined on the real line such that
@@ -361,18 +364,17 @@ infinitely divisible and \(\log Ee^{uX_t} = t\kappa(u)\).
 
 \section{Remarks}
 The Gram-Charlier A series expands the quotients of cumulative
-distribution functions \(G/F\) using Hermite polynomials,
-but does not have asymptotic convergence, whereas the Edgeworth expansion
-involves the quotient of characteristic functions 
-\(\hat G/\hat F\) in terms of cumulants and does have asymptotic convergence, ignoring some dainty facts \cite{Petrov}.
+distribution functions \(G/F\) using Hermite polynomials, but does not
+have asymptotic convergence, whereas the Edgeworth expansion involves
+the quotient of characteristic functions \(\hat G/\hat F\) in terms of
+cumulants and does have asymptotic convergence, ignoring some dainty
+facts \cite{Pet1975}.
+
+A software implementation in C++ is available at
+\url{https://fmsgjr.codeplex.com} and Excel add-ins
+at \url{https://xllgjr.codeplex.com}.
+
+\bibliographystyle{amsplain}
+\bibliography{gjr}
 
 \end{document}
-%jarrow-rudd
-%Arbogast, L. F. A. (1800), Du calcul des derivations (in French), Strasbourg: %Levrault, pp. xxiii+404, Entirely freely available from Google 
-%[5] C.A. Charalambides, Enumerative Combinatorics. 
-%Chapman & Hall/CRC, 2002. 
-%[6] L. Comtet, Advanced Combinatorics, Reidel, Dordrecht, 1974. 
-%J.P. Gram, "Ueber die Entwicklung reeller Funktionen in Reihen mittelst der Methode der kleinsten Quadraten" J. Reine Angew. Math. , 94 (1883) pp. 41–73  
-%[Ch] C.V.L. Charlier, "Frequency curves of type  in heterograde statistics" Ark. Mat. Astr. Fysik , 9 : 25 (1914) pp. 1–17  
-%E. T. Bell, Exponential polynomials, Annals of Mathematics 35 (1934), 258–277
-
