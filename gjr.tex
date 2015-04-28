@@ -15,7 +15,7 @@
 
 % \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
 
-\title{Generalized Jarrow-Rudd}
+\title{Efficient General Option Pricing}
 \author{Keith A. Lewis}
 \date{\today}
 
@@ -29,18 +29,22 @@ log of the the risk-neutral distribution of the underlying to
 achieve this.
 
 Instead of working with the difference of the cumulants from a lognormal
-distribution as in Jarrow-Rudd \cite{JarRud1982} we work with the difference of
-the cumulants from a normal distribution. 
-This is more natural since the cumulants of a normal distribution are
-easier to interpret.
-
-Just as with moments, not every cumulant sequence corresponds to a
-random variable. In the case of infinitely divisible random variables
-having finite variance, there is a condition similar to the Hamburger
-moment problem that ensures this.
+distribution as in Jarrow-Rudd \cite{JarRud1982} we work with the
+difference of the cumulants from a normal distribution.  This is more
+natural since all but the first two the cumulants of a normal distribution
+are zero.
 \end{abstract}
 
 \section{Outline}
+The forward value of an European put option having strike \(k\)
+and forward $F$ at expiration is
+\[
+E\max\{k - F, 0\} = E(k - F)1(F \le k) = kP(F\le k) - fP^*(F\le k)
+\]
+where $f = EF$ and $dP^*/dP = F/f$. We derive formulas for
+\(P(F\le k)\) and \(P^*(F\le k)\) that can be computed
+efficiently when $\log F$ is approximately normal.
+
 In section 2 we recall some basic fact about cumulants.
 Section 3 uses an Edgeworth expansion to give an explicit formula for
 the cumulative distribution function of the perturbed distribution.
