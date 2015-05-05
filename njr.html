@@ -1,0 +1,326 @@
+<!doctype html> <html lang='en-GB'>
+<head>
+	<meta charset='utf-8'>
+	<title>Title</title>
+</head>
+
+<body>
+<h1>Normal Jarrow-Rudd</h1>
+<p>
+The Jarrow-Rudd model involves pertubations of cumulants
+of lognormal distributions. <br/>
+Pertubations of cumulants of the normal distribution are
+easier to work with.
+</p>
+<h2>Put Value</h2>
+<p>
+A put with strike \(k\) and forward \(F\) at expiration has
+forward value
+\[
+\E (k - F)^+ = \E (k - F)1(F\le k)
+= kP(F\le k) - \E F1(F\le k)
+= kP(F\le k) - fP^*(F\le k),
+\]
+where \(f = \E F\) and \(dP^*/dP = F/f\) is the Esscher transform.
+</p>
+<p>
+Let \(F = fe^{-\kappa(s) + sX}\) where
+the <i>cumulant</i> \(\kappa(s) = \log \E e^{sX}\), so \(\E F = f\).
+</p>
+<p>
+The forward value is \(E(k - F)^+ = kP(X\le x) - fP^*(X\le x)\)
+where \(x = (\kappa(s) + \log k/f)/s\).
+</p>
+<h2>Cumulants</h2>
+<p>
+The <i>cumulants</i>, \((\kappa_n)\), are defined by
+\[
+\kappa(s) = \sum_{n=1}^\infty \kappa_n s^n/n!
+\]
+</p>
+<p>
+Note \(\kappa_1 = \kappa'(0) = \E X\)
+and \(\kappa_2 = \kappa''(0) = \Var(X)\).
+</p>
+<p>
+If \(X\) is normal, \(\E e^{sX}
+= e^{\E(sX) + \Var (sX)/2}\)
+so \(\kappa(s) = \E(X)s + \Var (X)s^2/2\)
+and \(\kappa_n = 0\) for \(n\gt 2\).
+</p>
+<p>
+This is why it is better to consider perturbations of
+the normal distribtion rather than lognormal.
+</p>
+
+<h2>Bell Polynomials</h2>
+<p>
+\[
+\E e^{sX} = e^{\kappa(s)}
+= e^{\sum_{n=1}^\infty \kappa_n s^n/n!}
+= \sum_{n=0}^\infty B_n(\kappa_1,\dots,\kappa_n) s^n/n!,
+\]
+where \(B_n\) is the \(n\)-th complete Bell polynomial.
+</p>
+<p>
+Clearly \(B_0 = 1\). They satisfy the recursive formula
+\[
+B_{n+1}(\kappa_1,\dots,\kappa_{n+1})
+= \sum_{k=0}^n \binom{n}{k} B_{n-k}(\kappa_1,\dots,\kappa_{n-k})\kappa_{k+1}.
+\]
+</p>
+
+<h2>Edgeworth Expansion</h2>
+<p>
+Let \(F\) be the cumulative distribution function of \(X\).
+The Fourier transform of \(F\) is \(\hat{F}(u) = \E e^{iuX}\).
+If \(Y\) is any random variable
+\[
+\E e^{iuY - iuX}
+= \sum_{n=0}^\infty B_n(\Delta\kappa_1,\dots,\Delta\kappa_n) (iu)^n/n!,
+\]
+where \(\Delta\kappa_n\) is the difference of the cumulants.
+<p>
+If \(Y\) is independent of \(X\) then
+\[
+\hat{G}(u) = \hat{F}(u)
+\sum_{n=0}^\infty B_n(\Delta\kappa_1,\dots,\Delta\kappa_n) (iu)^n/n!,
+\]
+</p>
+<p>
+Let \(G\) be the cumulative distribution function of \(Y\).
+Since the Fourier transform of the \(n\)-th derivative
+of \(F\) is \((-iu)^n\hat{F}(u)\) we have
+\[
+G(x) = \sum_{n=0}^\infty
+(-1)^n
+B_n(\Delta\kappa_1,\dots,\Delta\kappa_n)
+F^{(n)}(x)/n!
+\]
+</p>
+
+<h2>Hermite Polynomials</h2>
+<p>
+Hermite polynomials are defined by
+\[
+	H_n(x) = (-1)^ne^{x^2/2}\frac{d^n}{dx^n}e^{-x^2/2}
+\]
+and satisfy the recurrence
+\[
+	H_{n+1}(x) = x H_n(x) - n H_{n-1}(x).
+\]
+</p>
+<p>
+so \(F^{(n)}(x) = (-1)^{n-1}e^{-x^2/2}H_{n-1}(x)/\sqrt{2\pi}\)
+where \(F\) is the standard normal cumulative distribution.
+</p>
+<p>
+Putting it all together...
+</p>
+<p style="background-image:-ms-linear-gradient(left,#F0F0F0,white);">
+\[
+G(x) = F(x) - \sum_{n=1}^\infty
+B_n(\Delta\kappa_1,\dots,\Delta\kappa_n) e^{-x^2/2}H_{n-1}(x)/\sqrt{2\pi}
+\]
+</p>
+
+<h2>Esscher Transform</h2>
+<p>
+Recall \(dP^*/dP = F/f = e^{-\kappa(s) + sY}\) so
+\[
+\log E^*e^{uY} = \log \E e^{uY} e^{-\kappa(s) + sY} 
+= \kappa(u+s) -\kappa(s).
+\]
+</p>
+<p>
+A simple calculation shows the cumulants of \(Y^*\)
+are \(\kappa_n^* = \sum_{k=1}^\infty \kappa_{n+k}s^k/k!\).
+</p>
+
+<h2>Examples</h2>
+<p>
+<table>
+
+<tr>
+<th>Name</th>
+<th>Density Function</th>
+<th>\(\kappa_n\)</th>
+<th>\(\kappa_n^*\)</th>
+</tr>
+
+<tr>
+<td>Normal</td>
+<td>\(\frac{1}{\sqrt{2\pi}} e^{-x^2/2} \)</td>
+<td>\(\delta_{2n}\)</td>
+<td>\(s\delta_{1n} + \delta_{2n}\)</td>
+</tr>
+
+<tr>
+<td>Exponential</td>
+<td>\(\frac{1}{\mu}e^{-x/\mu}\), \(x\ge0\)</td>
+<td>\((n-1)!\mu^n\)</td>
+<td>\(n!\mu^n(\frac{1}{(1 - \mu s)^{n+1}} - 1)\)</td>
+</tr>
+
+<tr>
+<td>Gamma</td>
+<td>\(\frac{\beta^\alpha}{\Gamma(\alpha)}x^{\alpha - 1} e^{-\beta x}\), \(x\ge0\)</td>
+<td>\((n-1)!\frac{\alpha}{\beta^n}\)</td>
+<td>???</td>
+</tr>
+
+<tr>
+<td>Poisson</td>
+<td>\(e^{-\mu k}\frac{\mu^k}{k!}\), \(k\ge0\)</td>
+<td>\(\mu\)</td>
+<td>\(\mu(e^s - 1)\)</td>
+</table>
+</p>
+
+<span>
+<button id='leftArrow' type='button' onclick='leftArrow()'>&lt;</button>
+</span>
+<span>
+<button id='toggleInterval' type='button' onclick='toggleInterval()'></button>
+</span>
+<span>
+<button id='rightArrow'type='button' onclick='rightArrow()'>&gt;</button>
+</span>
+
+  <p>
+  \(\log Ee^{iuX} = iu\gamma + \int_{-\infty}^\infty K_u(x)\,dG(x)\),
+  where \(K_u(x) = (e^{iux} - 1 - iux)/x^2
+  = \sum_{n=2}^\infty (iu)^n x^{n-2}/n!\).
+  </p>
+
+  <span id='count'>0</span>
+
+  <style>
+	body { font-size: 120%; }
+	h1 { color: #0F0F0F; }
+	h2 { color: #4F4F4F; }
+	table {
+		border-collapse: collapse;
+	}
+	td {
+		border: 1px solid black;
+		padding: 3px 7px 2px 7px;
+	}
+	td:nth-child(1) { text-align:right; }
+	td:nth-child(2) { text-align:center; }
+	td:nth-child(3) { text-align:center; }
+	td:nth-child(4) { text-align:center; }
+  </style>
+  <script type="text/javascript"
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+MathJax.Hub.Config({
+	TeX: {
+		Macros: {
+			E: '\\mathop{E}',
+			Var: '\\mathop{\\mathrm{Var}}',
+		},
+	},
+	displayAlign: 'left',
+	displayIndent: '2em',
+	SVG: { linebreaks: { automatic:true } }, 
+
+  "HTML-CSS": {
+/*	scale: 200,
+	linebreaks: { automatic: true }, */
+ /*
+    webFont:"Neo-Euler",
+    webFont:"Latin-Modern",
+    webFont:"TeX",
+    webFont:"STIX-Web",
+    webFont:"Asana-Math",
+    webFont:"Gyre-Pagella",
+    webFont:"Gyre-Termes",
+*/
+    webFont:"TeX",
+    undefinedFamily:"'Arial Unicode MS',serif"
+  }
+});
+  </script>
+  <script language='javascript'>
+
+var vendors = ['-moz-','-webkit-','-o-','-ms-','-khtml-',''];
+function toCamelCase(str){
+return str.toLowerCase().replace(/(\-[a-z])/g, function($1){
+            return $1.toUpperCase().replace('-','');
+        });
+    };
+function setCss3Style(el,prop,val){
+    for(var i=0,l=vendors.length;i<l;i++)
+        {
+            var p = toCamelCase(vendors[i] + prop);
+            if(p in el.style)
+                el.style[p] = val;
+        }
+};
+	var counter = 0;
+	var interval;
+function rightArrow() {
+	var pi = document.getElementById('p' + counter);
+	pi.style.visibility = 'visible';
+	pi.style.display = 'block';
+	pi.style.opacity = 1;
+	setCss3Style(pi,'transition','visibility 1s');
+	setCss3Style(pi,'transition','opacity 1s linear');
+	window.scrollTo(0,document.body.scrollHeight);
+	++counter;
+}
+function leftArrow() {
+	--counter;
+	document.getElementById('count').innerHTML = counter;
+	var pi = document.getElementById('p' + counter);
+	pi.style.visibility = 'hidden';
+	pi.style.display = 'none';
+	pi.style.opacity = 0;
+	setCss3Style(pi,'transition','visibility 1s');
+	setCss3Style(pi,'transition','opacity 1s');
+	window.scrollTo(0,document.body.scrollHeight);
+}
+
+function pauseInterval() {
+	clearInterval(interval);
+	document.getElementById('toggleInterval').innerHTML = 'o';
+	interval = null
+}
+function resumeInterval() {
+	rightArrow();
+	interval = setInterval(rightArrow, 3000);
+	document.getElementById('toggleInterval').innerHTML = 'x';
+}
+function toggleInterval() {
+	if (interval) {
+		pauseInterval();
+	}
+	else {
+		resumeInterval();
+	}
+}
+
+	var db = document.body;
+	db.addEventListener('keydown', function(evt) {
+		if (evt.keyCode == 39) { // right arrow
+			rightArrow();
+			document.getElementById('count').innerHTML = counter;
+		}
+		if (evt.keyCode == 37 && counter > 0) { // left arrow
+			leftArrow();
+		}
+	});
+	// add ids and hide all paragraphs
+	window.onload = function (e) {
+		var p = document.getElementsByTagName('p');
+		for (i = 0; i < p.length; ++i) {
+			p[i].id = 'p' + i;
+			p[i].style.visibility = 'hidden';
+			p[i].style.display = 'none';
+			p[i].style.opacity = 0;
+		}
+		resumeInterval();
+	};
+  </script>
+</body>
+</html>
