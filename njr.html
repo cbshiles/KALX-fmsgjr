@@ -7,11 +7,27 @@
 <body>
 <h1>Normal Jarrow-Rudd</h1>
 <p>
-The Jarrow-Rudd model involves pertubations of cumulants
-of lognormal distributions. <br/>
-Pertubations of cumulants of the normal distribution are
-easier to work with.
-</p>
+One of my clients worked at O'Conner back in the day. They used
+the Jarrow-Rudd model to fit the volatility smile at a
+single maturity for European options.
+</p><p>
+Of course Alex being Alex meant he expected me to find the
+mistake in their paper that the clever quants at O'Conner
+had fixed. I did that too in my first cut for him.
+</p><p>
+Me being me kept thinking about their approach.
+Pertubations of normal distribution cumulants are easier to work with than
+lognormal distribution cumulants, for the simple reason that all but the
+first two the cumulants of a normal distribution are zero
+</p><p>
+The third and fourth cumulant are closely related to skew and kurtosis,
+but there is a Nobel prize awaiting someone, or simply taking the shortcut of
+beating the market, who can come up with a parameterization that
+fits volatility curves given three or four, or even five option prices.
+</p><p>
+This short talk explains the knobs for doing that. 
+You can turn them yourself if you have Excel running on Windows.
+</p><p>
 <h2>Put Value</h2>
 <p>
 A put with strike \(k\) and forward \(F\) at expiration has

@@ -10,7 +10,7 @@
 
 \newcommand{\Var}{\mathop{\rm{Var}}}
 \newcommand{\Cov}{\mathop{\rm{Cov}}}
-\theoremstyle{remark}
+\theoremstyle{definition}
 \newtheorem*{example}{}
 
 % \usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
@@ -23,16 +23,22 @@
 \maketitle
 \begin{abstract}
 The Black-Scholes/Merton model has been Nobel prize winning successful,
-but parameterizing models that fit market data has been a remarkably
-recalcitrant problem. This note explores using cumulants of the
-log of the the risk-neutral distribution of the underlying to
-achieve this.
+but parameterizing models that fit volatility smiles at even a single
+maturity for European options has been a remarkably
+intractable problem.
 
 Instead of working with the difference of the cumulants from a lognormal
 distribution as in Jarrow-Rudd \cite{JarRud1982} we work with the
 difference of the cumulants from a normal distribution.  This is more
-natural since all but the first two the cumulants of a normal distribution
-are zero.
+natural since all but the first two cumulants of a normal distribution
+are zero. The pertubations of the third and fourth cumulant are closely
+related to the skew and kurtosis.
+
+Some care is required, not all sequences are cumulants, just as
+not all sequences can be moments of a random variable.
+The mathematics involved is fairly elementary and a software
+implementation is available for you to try out your ideas
+on how this can be used.
 \end{abstract}
 
 \section{Outline}
@@ -41,15 +47,25 @@ and forward $F$ at expiration is
 \[
 E\max\{k - F, 0\} = E(k - F)1(F \le k) = kP(F\le k) - fP^*(F\le k)
 \]
-where $f = EF$ and $dP^*/dP = F/f$. We derive formulas for
+where $f = EF$ and $dP^*/dP = F/f$
+is the {\em Esscher transform}\cite{Ess1932}.
+We derive formulas for
 \(P(F\le k)\) and \(P^*(F\le k)\) that can be computed
 efficiently when $\log F$ is approximately normal.
 
-In section 2 we recall some basic fact about cumulants.  Section 3 uses
-an Edgeworth expansion to give an explicit formula for the cumulative
+This generalizes the Black formula
+\(E\max\{k - F,0\} = k\Phi(-d_2) - f\Phi(-d_1)\)
+where \(F = fe^{-\sigma^2t/2 + \sigma B_t}\), \((B_t)\) is
+standard Brownian motion, \(\Phi\) is the standard normal cumulative
+distribution function, \(d_1 = (\sigma^2 t/2
++ \log f/k)/\sigma\sqrt{t}\) and \(d_2 = d_1 - \sigma\sqrt{t}\).
+
+In section 2 we recall some basic facts about cumulants.  Section 3 uses
+an Edgeworth expansion and Hermite polynomials
+to give an explicit formula for the cumulative
 distribution function of the perturbed distribution.  Option valuation
-is considered in section 4. We show how the Esscher transform can be
-calculated using the same method as in section 3. The last section
+is considered in section 4 where we show how the Esscher transform can be
+calculated using the method in section 3. The last section
 collects some general remarks.
 
 \section{Cumulants}
@@ -57,13 +73,13 @@ collects some general remarks.
 The {\em cumulants}, \((\kappa_n)\), of a random variable \(X\)
 are defined by
 \[
-\kappa(u) = \log Ee^{uX} = \sum_{n=0}^\infty \kappa_n \frac{u^n}{n!}
+\kappa(s) = \log Ee^{sX} = \sum_{n=1}^\infty \kappa_n \frac{s^n}{n!}
 \]
-Taking \(u = 0\) yields \(\kappa_0 = 0\). Since
-\((d/du)^n\kappa(u)|_{u = 0} = \kappa_n\) it is easy to
+Since \((d/ds)^n\kappa(s)|_{s = 0} = \kappa_n\) it is easy to
 work out that
 \(\kappa_1 = EX\) and \(\kappa_2 = \Var(X)\). Higher order
-cumulants are less intuitive.
+cumulants are less intuitive but the third and fourth are
+related to skew and kurtosis.
 
 Cumulants have some handy properties. 
 The cumulants of a random variable plus a constant are the 
@@ -74,14 +90,13 @@ They scale homogeneously, the \(n\)-th cumulant of a constant
 times a random variable is
 \(\kappa_n(cX) = c^n\kappa_n(X)\).
 
-Another nice property of cumulants is that they are more likely
-to exists than moments, \(m_n = EX^n\).
-The relationship between cumulants and moments involves Bell
+The relationship between cumulants and moments, \(m_n = EX^n\),
+involves Bell
 polynomials\cite{Bel1934}.
 \[
-Ee^{uX} = \sum_{n=0}^\infty m_n \frac{u^n}{n!}
- = \exp(\sum_{n=1}^\infty \kappa_n \frac{u^n}{n!})
-= \sum_{n=0}^\infty B_n(\kappa_1,\dots,\kappa_n) \frac{u^n}{n!}
+Ee^{sX} = \sum_{n=0}^\infty m_n \frac{s^n}{n!}
+ = \exp(\sum_{n=1}^\infty \kappa_n \frac{s^n}{n!})
+= \sum_{n=0}^\infty B_n(\kappa_1,\dots,\kappa_n) \frac{s^n}{n!}
 \]
 where \(B_n(\kappa_1,\dots,\kappa_n)\) is the \(n\)-th complete
 Bell polynomial.
@@ -93,60 +108,6 @@ Bell polynomials satisfy the recurrence \cite{Com1974} \(B_0 = 1\) and
 B_{n+1}(x_1,\dots,x_{n+1}) = \sum_{k=0}^n \binom{n}{k}
 B_{n - k}(x_1,\dots, x_{n - k}) x_{k+1}.
 \]
-
-\subsection{Examples}
-\begin{example}[Normal]
-If \(X\) is normal then \(Ee^X = e^{E X + \Var(X)/2}\) so
-\(Ee^{uX} = e^{uEX + u^2\Var(X)/2}\) showing the
-third and higher order cumulants vanish. If the cumulants of
-a random variable vanish after some some point, then it must
-be normal\cite{Luk1970} (Theorem 7.3.5).
-Something to keep in mind with computer
-implementations.
-\end{example}
-\begin{example}[Poisson]
-If \(X\) is Poisson
-with mean \(\mu\) then \(\kappa_n = \mu\) for all \(n\).
-\end{example}
-%\begin{example}[Compound Poisson]
-%If \(Y\) is Poisson with mean \(\mu\) and \(Z_j\) are
-%independent and identically distributed, define
-%\(X = \sum_{j=1}^{Y} Z_j\). The cumulants of \(X\)
-%are \(\kappa_n = ?\).
-%\end{example}
-%\begin{align*}
-%Ee^{uX} &= \sum_{k=0}^\infty Ee^{u(Z_1 + \cdots Z_k)}\mu^k/k!\,e^{-\mu}\\
-%&= \sum_{k=0}^\infty (Ee^{u Z_1})^k\mu^k/k!\,e^{-\mu}\\
-%&= \sum_{k=0}^\infty (Ee^{u Z_1}\mu)^k/k!\,e^{-\mu}\\
-%&= e^{\mu Ee^{u Z_1}}\,e^{-\mu}\\
-%&= e^{\mu (Ee^{u Z_1} - 1)}\\
-%\end{align*}
-%Define \(\lambda(u) = \log Ee^{uZ_1}\). Then
-%\(\log E e^{uX} = \mu(e^{\lambda(u)} -1)\).
-\begin{example}[Exponential]
-If \(X\) is exponential with mean \(\mu\) then
-\(\kappa_n = (n - 1)!\mu^n\).
-\end{example}
-\begin{example}[Gamma]
-If \(X\) is gamma with mean \(\alpha/\beta\) and variance
-\(\alpha/\beta^2\) then \(\kappa_n = (n - 1)!\alpha/\beta^n\).
-Note gamma is exponential when
-\(\alpha = 1\) and \(\beta = 1/\mu\).
-%\begin{align*}
-%Ee^{uX} &= \int_0^\infty e^{ux} x^{\alpha-1} e^{-\beta x}
-%\frac{\beta^\alpha}{\Gamma(\alpha)}\,dx\\
-%&= \int_0^\infty x^{\alpha-1} e^{-(\beta -u) x}
-%\frac{\beta^\alpha}{\Gamma(\alpha)}\,dx\\
-%&= \frac{\Gamma(\alpha)}{(\beta - u)^\alpha} \frac{\beta^\alpha}{\Gamma(\alpha)}\\
-%&= (1 - u/\beta)^{-\alpha}\\
-%\end{align*}
-%so
-%\(
-%\log E e^{uX} = \alpha \sum_{n=1}^\infty (u/\beta)^n/n\).
-
-
-\end{example}
-%\(\chi^2\) with \(r\) degrees of freedom \(\kappa_n = 2^{n-1}(n-1)!r\).
 
 \section{Edgeworth Expansion}
 Given random
@@ -160,7 +121,8 @@ Ee^{iuY} = Ee^{iuX}\sum_{n=0}^\infty B_n(\Delta\kappa_1,...,\Delta\kappa_n)(iu)^
 
 Let \(F\) and \(G\) be the cumulative distribution functions of
 \(X\) and \(Y\) respectively.
-Since the Fourier transform of \(F'\) is \(-iu \hat F(u)\),
+Since the Fourier transform, \(\hat{F}(u) = Ee^{iuX}\),
+of \(F'\) is \(-iu \hat F(u)\),
 the Fourier transform of the \(n\)-th derivative
 \(F^{(n)}\) is \((-iu)^n\hat F(u)\).
 Taking the inverse Fourier transform shows
@@ -184,6 +146,12 @@ and they satisfy the recurrence \(H_0(x) = 1\), \(H_1(x) = x\) and
 H_{n+1}(x) = xH_n(x) - n H_{n-1}(x).
 \]
 Note some authors use \(He_n(x)\) instead of \(H_n(x)\).
+
+Putting this all together we get
+\[
+G(x) = F(x) - \sum_{n=1}^\infty
+B_n(\Delta\kappa_1,\dots,\Delta\kappa_n) e^{-x^2/2}H_{n-1}(x)/\sqrt{2\pi}
+\]
 
 %We have
 %\(
@@ -215,72 +183,49 @@ Note some authors use \(He_n(x)\) instead of \(H_n(x)\).
 %
 %Let \(\phi(y) = \max\{k - se\exp(-\kappa(t,\sigma) + \sigma\sqrt{t}y)\)
 
-\section{Option Valuation}
-The forward value of a put on a stock \(S\) with strike \(k\) is
+\section{The Esscher Transform}
+
+If \(X\) is standard normal then
+\(P^*(X\le z) = Ee^{-s^2/2 + sX} 1(X\le z)) = P(X + s\le z)
+= \Phi(z - s)\)
+where we use the fact
 \[
-E\max\{k - S,0\} = k P(S \le k) - E S\,P^*(S \le k)
+Ee^M f(N) = Ee^M Ef(N + \Cov(M,N))
 \]
-where \(dP^*/dP = S/ES\) is the {\em Esscher transform}\cite{Ess1932}.
-This is the analog of 
-\(E\max\{k - S,0\} = kN(-d_2) - sN(-d_1)\)
-when \(S\) is lognormal.
+if \(M\) and \(N\) are
+jointly normal. Here \(M = -s^2/2 + sX\), \(N = X\), and \(f(x) = 1(x\le z)\).
 
-\subsection{Black Model}
-The Black model is \(S = S_t = se^{-\sigma^2t/2 + \sigma B_t}\)
-where \((B_t)\) is standard Brownian motion and \(t\) is time
-in years. Note \(ES = s\) and \(S \le k\)
-if and only if \(B_t/\sqrt{t} \le z\) where
-\(z = (\log k/s + \sigma^2 t/2)/\sigma\sqrt{t}\). In the usual
-notation, \(z = -d_2\).
-
-Letting \(X = B_t/\sqrt{t}\) and so \(F = N\) is the standard
-normal cumulative distributing function we have
-\(P(X\le z) = F(z)\) and \(P^*(X\le z) = P(X + \sigma\sqrt{t} \le z)
-= F(z - \sigma\sqrt{t})\) where we use the fact
+If \(Y\) is a pertubation of \(X\) then
+for \(G(z) = P(Y\le z)\), we need to compute
 \[
-Ee^U f(V) = Ee^U Ef(V + \Cov(U,V))
+G^*(z) = P^*(Y\le z) = Ee^{-\kappa(s) + sY}1(Y\le z).
 \]
-if \(U\) and \(V\) are
-jointly normal. In the standard notation \(z - \sigma\sqrt{t} = -d_1\).
-
-\subsection{Generalized Black Model}
-The generalized Black model is \(S = se^{-\kappa(t,\sigma) + \sigma X_t}\)
-where \((X_t)\) is any stochastic process and 
-\(\kappa(t, \sigma) = \log E \exp(\sigma X_t)\). 
-Note \(ES = s\) and \(S \le k\)
-if and only if 
-\(X_t/\sqrt{t} \le (\log k/s + \kappa(t,\sigma))/\sigma\sqrt{t}\).
-
-Letting \(Y = X_t/\sqrt{t}\) and \(G\) be the corresponding cumulative
-distribution function, \(G(z) = P(Y\le z)\), we need to compute
-\[
-G^*(z) = P^*(Y\le z) = Ee^{-\kappa(t,\sigma) + \sigma\sqrt{t}Y}1(Y\le z).
-\]
-Letting \(\gamma = \sigma\sqrt{t}\), the cumulants of \(G^*\) can be found from
+The cumulants of \(Y^*\) can be found from
 \begin{align*}
-\log E e^{uY^*} &= \log E e^{-\kappa(t,\gamma) + \gamma Y} e^{uY}\\
-&= -\kappa(t, \gamma) + \log E e^{(\gamma + u) Y}\\
-&= -\sum_{n=1}^\infty \kappa_n \frac{\gamma^n}{n!} 
-	+ \kappa_n \frac{(u + \gamma)^n}{n!}\\
+\log E e^{uY^*} &= \log E e^{-\kappa(s) + s Y} e^{uY}\\
+&= -\kappa(s) + \kappa(s + u)\\
+&= \sum_{n=1}^\infty -\kappa_n \frac{s^n}{n!} 
+	+ \kappa_n \frac{(u + s)^n}{n!}\\
 &= \sum_{n=1}^\infty \sum_{k=0}^{n-1} \kappa_n \binom{n}{k}
-	\frac{\gamma^{n - k}u^k}{n!}\\
+	\frac{s^{n - k}u^k}{n!}\\
 &= \sum_{k=1}^\infty \sum_{n=k + 1}^\infty \kappa_n 
-	\binom{n}{k}\frac{\gamma^{n - k}u^k}{n!}\\
-&= \sum_{k=1}^\infty \sum_{n=k + 1}^\infty \kappa_n \frac{\gamma^{n-k}}{(n-k)!}
+	\binom{n}{k}\frac{s^{n - k}u^k}{n!}\\
+&= \sum_{k=1}^\infty \sum_{n=k + 1}^\infty \kappa_n \frac{s^{n-k}}{(n-k)!}
 	\frac{u^k}{k!}\\
 &= \sum_{k=1}^\infty 
-	\bigl(\sum_{n=1}^\infty \kappa_{n+k} \frac{\gamma^n}{n!}\bigr)
+	\bigl(\sum_{n=1}^\infty \kappa_{n+k} \frac{s^n}{n!}\bigr)
 	\frac{u^k}{k!}\\
 \end{align*}
 This shows the cumulants of \(Y^*\) are 
-\(\kappa^*_k = \sum_{n=1}^\infty \kappa_{n + k}\gamma^n/n!\)
+\(\kappa^*_n = \sum_{k=1}^\infty \kappa_{n + k}s^k/k!\)
 so we can also compute \(P(Y^* \le z) = G^*(z)\) using the same
-technique as we did for \(G\).
+technique as for \(G\).
 
-If \(G\) is standard normal then all cumulants vanish except \(\kappa_2 = 1\). The only nonzero cumulants of \(G^*\) are \(\kappa_1 = \gamma\)
-and \(\kappa_2 = 1\). The corresponding reduced Bell polynomials
-are \(B_n = \gamma^n/n!\) and we see the above formula is just
-the Taylor series expansion of \(G(z - \gamma)\).
+If \(G\) is standard normal then all cumulants vanish except \(\kappa_2 = 1\).
+The only nonzero cumulants of \(G^*\) are \(\kappa_1 = s\)
+and \(\kappa_2 = 1\). The corresponding complete Bell polynomials
+are \(B_n = s^n/n!\) and we see the above formula is just
+the Taylor series expansion of \(G(z - s)\).
 %
 %The Edgeworth series expands the exponential in a power series.
 %\[\exp\bigl(\sum_{n=0}^\infty \Delta\kappa_n (iu)^n/n!\bigr)
@@ -326,6 +271,67 @@ the Taylor series expansion of \(G(z - \gamma)\).
 %	 - \kappa_4 (x^5 - 10x^3 + 15x)/24)e^{-x^2/2}/\sqrt{2\pi}\\
 %\end{align*}
 %
+\subsection{Examples}
+\begin{example}[Normal]
+If \(X\) is normal with mean \(\mu\) and variance \(\sigma^2\) then
+\(\kappa(s) = \mu s + \sigma^2s^2/\) so
+\(\kappa_1 = \mu\) and \(\kappa_2 = \sigma^2\) are the only non-zero
+cumulants. This follows from \(Ee^X = e^{\mu + \sigma^2/2}\).
+
+If the cumulants of
+a random variable vanish after some some point, then it must
+be normal\cite{Luk1970} (Theorem 7.3.5).
+Something to keep in mind with computer
+implementations.
+\end{example}
+\begin{example}[Poisson]
+If \(X\) is Poisson
+with mean \(\mu\) then \(\kappa(s) = \mu(e^s - 1\) so
+\(\kappa_n = \mu\) for all \(n\).
+\end{example}
+%\begin{example}[Compound Poisson]
+%If \(Y\) is Poisson with mean \(\mu\) and \(Z_j\) are
+%independent and identically distributed, define
+%\(X = \sum_{j=1}^{Y} Z_j\). The cumulants of \(X\)
+%are \(\kappa_n = ?\).
+%\end{example}
+%\begin{align*}
+%Ee^{uX} &= \sum_{k=0}^\infty Ee^{u(Z_1 + \cdots Z_k)}\mu^k/k!\,e^{-\mu}\\
+%&= \sum_{k=0}^\infty (Ee^{u Z_1})^k\mu^k/k!\,e^{-\mu}\\
+%&= \sum_{k=0}^\infty (Ee^{u Z_1}\mu)^k/k!\,e^{-\mu}\\
+%&= e^{\mu Ee^{u Z_1}}\,e^{-\mu}\\
+%&= e^{\mu (Ee^{u Z_1} - 1)}\\
+%\end{align*}
+%Define \(\lambda(u) = \log Ee^{uZ_1}\). Then
+%\(\log E e^{uX} = \mu(e^{\lambda(u)} -1)\).
+\begin{example}[Exponential]
+If \(X\) is exponential with mean \(\mu\) then
+\(\kappa(s) = -\log(1 - \mu s)\) and
+\(\kappa_n = (n - 1)!\mu^n\).
+\end{example}
+\begin{example}[Gamma]
+If \(X\) is gamma with mean \(\alpha/\beta\) and variance
+\(\alpha/\beta^2\) then
+\(\kappa(s) = -\alpha\log(1 - s/\beta)\) and
+\(\kappa_n = (n - 1)!\alpha/\beta^n\).
+Note gamma is exponential when
+\(\alpha = 1\) and \(\beta = 1/\mu\).
+%\begin{align*}
+%Ee^{uX} &= \int_0^\infty e^{ux} x^{\alpha-1} e^{-\beta x}
+%\frac{\beta^\alpha}{\Gamma(\alpha)}\,dx\\
+%&= \int_0^\infty x^{\alpha-1} e^{-(\beta -u) x}
+%\frac{\beta^\alpha}{\Gamma(\alpha)}\,dx\\
+%&= \frac{\Gamma(\alpha)}{(\beta - u)^\alpha} \frac{\beta^\alpha}{\Gamma(\alpha)}\\
+%&= (1 - u/\beta)^{-\alpha}\\
+%\end{align*}
+%so
+%\(
+%\log E e^{uX} = \alpha \sum_{n=1}^\infty (u/\beta)^n/n\).
+
+
+\end{example}
+%\(\chi^2\) with \(r\) degrees of freedom \(\kappa_n = 2^{n-1}(n-1)!r\).
+
 
 \subsection{L\'evy Processes}
 
@@ -340,16 +346,28 @@ states that if a random variable \(X\) is infinitely divisible
 there exists a number \(\gamma\) and a non-decreasing function
 \(G\) defined on the real line such that
 \[
-\kappa(u) = \log Ee^{uX} = u\gamma + \int_{-\infty}^\infty K_u(x)\,dG(x),
+\kappa(s) = \log Ee^{sX} = s\gamma + \int_{-\infty}^\infty K_s(x)\,dG(x),
 \]
-where \(K_u(x) = (e^{ux} - 1 - ux)/x^2\). Note the first
+where \(K_s(x) = (e^{sx} - 1 - sx)/x^2 = \sum_{n=2}^\infty s^nx^{n-2}/n!\).
+Note the first
 cumulant of \(X\) is \(\gamma\) and for \(n\ge 2\),
 \(\kappa_n = \int_{-\infty}^\infty x^{n-2}\,dG(x)\). In particular
 the variance of \(X\) is 
 \(\int_{-\infty}^\infty dG(x) = G(\infty) - G(-\infty)\).
 
+Note \(K_s(0) = s^2/2\) is the cumulant of the standard normal
+distribution and \(a^2K_s(a) + as\) is the cumulant of a
+Poisson distrbution having mean \(a\). This implies
+that infinitely divisible random variables can be
+approximated by a normal plus a linear combination of
+independent Poisson distributions.
+
 If \((X_t)\) is a L\'evy process then \(X_1\) is
-infinitely divisible and \(\log Ee^{uX_t} = t\kappa(u)\).
+infinitely divisible and \(\log Ee^{sX_t} = t\kappa(s)\).
+A consequence is that the volatility smile at a single
+maturity determines the entire volatility surface, a fact that
+may indicate L\'evy processes are not appropriate for
+modeling stock prices.
 
 %The K-model takes \(\gamma = 0\) and \(G\) of the form
 %\[
