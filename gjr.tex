@@ -31,11 +31,9 @@ Instead of working with the difference of the cumulants from a lognormal
 distribution as in Jarrow-Rudd \cite{JarRud1982} we work with the
 difference of the cumulants from a normal distribution.  This is more
 natural since all but the first two cumulants of a normal distribution
-are zero. The pertubations of the third and fourth cumulant are closely
+are zero. For other distributions third and fourth cumulant are closely
 related to the skew and kurtosis.
 
-Some care is required, not all sequences are cumulants, just as
-not all sequences can be moments of a random variable.
 The mathematics involved is fairly elementary and a software
 implementation is available for you to try out your ideas
 on how this can be used.
@@ -61,8 +59,10 @@ distribution function, \(d_1 = (\sigma^2 t/2
 + \log f/k)/\sigma\sqrt{t}\) and \(d_2 = d_1 - \sigma\sqrt{t}\).
 
 In section 2 we recall some basic facts about cumulants.  Section 3 uses
-an Edgeworth expansion and Hermite polynomials
-to give an explicit formula for the cumulative
+an Edgeworth expansion and Bell polynomials to show their relationship
+to moments.
+The next section describes how Hermite polynomials
+give an explicit formula for the cumulative
 distribution function of the perturbed distribution.  Option valuation
 is considered in section 4 where we show how the Esscher transform can be
 calculated using the method in section 3. The last section
@@ -272,11 +272,14 @@ the Taylor series expansion of \(G(z - s)\).
 %\end{align*}
 %
 \subsection{Examples}
+Recall \(\kappa_n^* = \sum_{k=0}^\infty \kappa_{n+k}s^k/k!\).
 \begin{example}[Normal]
 If \(X\) is normal with mean \(\mu\) and variance \(\sigma^2\) then
 \(\kappa(s) = \mu s + \sigma^2s^2/\) so
 \(\kappa_1 = \mu\) and \(\kappa_2 = \sigma^2\) are the only non-zero
-cumulants. This follows from \(Ee^X = e^{\mu + \sigma^2/2}\).
+cumulants. We also have \(\kappa_1^* = \mu + \sigma^2s\)
+and \(\kappa_2^* = \kappa_2\).
+These formulas follow from \(Ee^X = e^{\mu + \sigma^2/2}\).
 
 If the cumulants of
 a random variable vanish after some some point, then it must
@@ -286,8 +289,9 @@ implementations.
 \end{example}
 \begin{example}[Poisson]
 If \(X\) is Poisson
-with mean \(\mu\) then \(\kappa(s) = \mu(e^s - 1\) so
-\(\kappa_n = \mu\) for all \(n\).
+with mean \(\mu\) then \(\kappa(s) = \mu(e^s - 1)\) so
+\(\kappa_n = \mu\) for all \(n\) and
+\(\kappa_n^* = \mu e^s\).
 \end{example}
 %\begin{example}[Compound Poisson]
 %If \(Y\) is Poisson with mean \(\mu\) and \(Z_j\) are
@@ -307,13 +311,19 @@ with mean \(\mu\) then \(\kappa(s) = \mu(e^s - 1\) so
 \begin{example}[Exponential]
 If \(X\) is exponential with mean \(\mu\) then
 \(\kappa(s) = -\log(1 - \mu s)\) and
-\(\kappa_n = (n - 1)!\mu^n\).
+\(\kappa_n = (n - 1)!\mu^n\) so
+\(\kappa_n^* = (n-1)!\mu^n/(1 + \mu s)^n\)
+% sum_k (n + k - 1)!\mu^(n+k)/k! =  
+since \(\sum_{k=0}^\infty (n + k - 1)!x^k/k!
+= (n-1)!/(1 - x)^n\).
 \end{example}
 \begin{example}[Gamma]
 If \(X\) is gamma with mean \(\alpha/\beta\) and variance
 \(\alpha/\beta^2\) then
 \(\kappa(s) = -\alpha\log(1 - s/\beta)\) and
-\(\kappa_n = (n - 1)!\alpha/\beta^n\).
+\(\kappa_n = (n - 1)!\alpha/\beta^n\) so
+\(\kappa_n^* = (n - 1)!\alpha/\beta^n/(1 - s/\beta)^n\).
+
 Note gamma is exponential when
 \(\alpha = 1\) and \(\beta = 1/\mu\).
 %\begin{align*}
@@ -328,6 +338,13 @@ Note gamma is exponential when
 %\(
 %\log E e^{uX} = \alpha \sum_{n=1}^\infty (u/\beta)^n/n\).
 
+At the money pricing ???
+%F = fe^{-k(s) + s X}, x \le k(s)/s
+\[
+f(P(F\le f) - P^*(F\le f))
+= f(P(X\le \kappa(s)/s\) - P^*(X\le \le \kappa(s)/s)
+= f(\Phi(X\le s/2) - \Phi(-s/2))
+\]
 
 \end{example}
 %\(\chi^2\) with \(r\) degrees of freedom \(\kappa_n = 2^{n-1}(n-1)!r\).
@@ -341,33 +358,24 @@ Note gamma is exponential when
 %\(EX = b\mu + c\) and \(\Var X = a^2 + b^2\). Taking
 %\(b = \sqrt{1 - a^2}\)
 
-Kolmogorov's version of the L\'evy-Khintchine theorem\cite{Kol1992}
+Kolmogorov's precursor to the L\'evy-Khintchine theorem\cite{Kol1992}
 states that if a random variable \(X\) is infinitely divisible
+and has finite variance
 there exists a number \(\gamma\) and a non-decreasing function
 \(G\) defined on the real line such that
 \[
 \kappa(s) = \log Ee^{sX} = s\gamma + \int_{-\infty}^\infty K_s(x)\,dG(x),
 \]
 where \(K_s(x) = (e^{sx} - 1 - sx)/x^2 = \sum_{n=2}^\infty s^nx^{n-2}/n!\).
-Note the first
-cumulant of \(X\) is \(\gamma\) and for \(n\ge 2\),
-\(\kappa_n = \int_{-\infty}^\infty x^{n-2}\,dG(x)\). In particular
-the variance of \(X\) is 
-\(\int_{-\infty}^\infty dG(x) = G(\infty) - G(-\infty)\).
+Note the first cumulant of \(X\) is \(\gamma\) and for \(n\ge 2\),
+\(\kappa_n = \int_{-\infty}^\infty x^{n-2}\,dG(x)\).
 
-Note \(K_s(0) = s^2/2\) is the cumulant of the standard normal
+Since \(K_s(0) = s^2/2\) is the cumulant of the standard normal
 distribution and \(a^2K_s(a) + as\) is the cumulant of a
-Poisson distrbution having mean \(a\). This implies
-that infinitely divisible random variables can be
+Poisson distrbution having mean \(a\),
+infinitely divisible random variables can be
 approximated by a normal plus a linear combination of
 independent Poisson distributions.
-
-If \((X_t)\) is a L\'evy process then \(X_1\) is
-infinitely divisible and \(\log Ee^{sX_t} = t\kappa(s)\).
-A consequence is that the volatility smile at a single
-maturity determines the entire volatility surface, a fact that
-may indicate L\'evy processes are not appropriate for
-modeling stock prices.
 
 %The K-model takes \(\gamma = 0\) and \(G\) of the form
 %\[
@@ -390,6 +398,13 @@ have asymptotic convergence, whereas the Edgeworth expansion involves
 the quotient of characteristic functions \(\hat G/\hat F\) in terms of
 cumulants and does have asymptotic convergence, ignoring some dainty
 facts \cite{Pet1975}.
+
+If \((X_t)\) is a L\'evy process then \(X_1\) is
+infinitely divisible and \(\log Ee^{sX_t} = t\kappa(s)\).
+A consequence is that the volatility smile at a single
+maturity determines the entire volatility surface, a fact that
+may indicate L\'evy processes are not appropriate for
+modeling stock prices.
 
 A software implementation in C++ is available at
 \url{https://fmsgjr.codeplex.com} and Excel add-ins
