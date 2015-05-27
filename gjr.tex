@@ -31,7 +31,7 @@ Instead of working with the difference of the cumulants from a lognormal
 distribution as in Jarrow-Rudd \cite{JarRud1982} we work with the
 difference of the cumulants from a normal distribution.  This is more
 natural since all but the first two cumulants of a normal distribution
-are zero. For other distributions third and fourth cumulant are closely
+are zero. For other distributions, the third and fourth cumulant are closely
 related to the skew and kurtosis.
 
 The mathematics involved is fairly elementary and a software
@@ -61,7 +61,7 @@ distribution function, \(d_1 = (\sigma^2 t/2
 In section 2 we recall some basic facts about cumulants.  Section 3 uses
 an Edgeworth expansion and Bell polynomials to show their relationship
 to moments.
-The next section describes how Hermite polynomials
+The third section describes how Hermite polynomials
 give an explicit formula for the cumulative
 distribution function of the perturbed distribution.  Option valuation
 is considered in section 4 where we show how the Esscher transform can be
@@ -70,10 +70,12 @@ collects some general remarks.
 
 \section{Cumulants}
 
-The {\em cumulants}, \((\kappa_n)\), of a random variable \(X\)
+The {\em cumulant} of the random variable \(X\)
+is \(\kappa(s) = \log Ee^{sX}\).
+The {\em cumulants}, \((\kappa_n)\),
 are defined by
 \[
-\kappa(s) = \log Ee^{sX} = \sum_{n=1}^\infty \kappa_n \frac{s^n}{n!}
+\kappa(s) = \sum_{n=1}^\infty \kappa_n \frac{s^n}{n!}
 \]
 Since \((d/ds)^n\kappa(s)|_{s = 0} = \kappa_n\) it is easy to
 work out that
@@ -81,7 +83,6 @@ work out that
 cumulants are less intuitive but the third and fourth are
 related to skew and kurtosis.
 
-Cumulants have some handy properties. 
 The cumulants of a random variable plus a constant are the 
 same except the first cumulant is increased by the constant.
 More generally, the cumulants of the sum of two independent 
@@ -121,27 +122,25 @@ Ee^{iuY} = Ee^{iuX}\sum_{n=0}^\infty B_n(\Delta\kappa_1,...,\Delta\kappa_n)(iu)^
 
 Let \(F\) and \(G\) be the cumulative distribution functions of
 \(X\) and \(Y\) respectively.
-Since the Fourier transform, \(\hat{F}(u) = Ee^{iuX}\),
+Since the Fourier transform (\(\hat{F}(u) = Ee^{iuX}\))
 of \(F'\) is \(-iu \hat F(u)\),
 the Fourier transform of the \(n\)-th derivative
 \(F^{(n)}\) is \((-iu)^n\hat F(u)\).
 Taking the inverse Fourier transform shows
 \[
-G(x) = \sum_{n=0}^\infty (-1)^n \frac{B_n}{n!} F^{(n)}(x)
+	G(x) = \sum_{n=0}^\infty (-1)^n B_n(\Delta\kappa_1,...,\Delta\kappa_n)
+	F^{(n)}(x)/n!
 \]
 
 \subsection{Hermite Polynomials}
-The derivatives the standard normal cumulative distribution 
+The derivatives of the standard normal cumulative distribution 
 can be computed using Hermite polynomials\cite{AbrSte1964}
 pp. 793--801.
-Recall the Hermite polynomials are the result of the Gram-Schmidt
-process applied to the basis \((x^n)_{n\ge0}\) on the Hilbert space
-having inner product \((f,g) = \int_{-\infty}^\infty f(x)g(x)\,e^{-x^2/2}dx\).
-The standard results are
+One definition is
 \[
-H_n(x) = (-1)^n e^{x^2/2}\frac{d^n}{dx^n}e^{-x^2/2}
+H_n(x) = (-1)^n e^{x^2/2}\frac{d^n}{dx^n}e^{-x^2/2}.
 \]
-and they satisfy the recurrence \(H_0(x) = 1\), \(H_1(x) = x\) and
+They satisfy the recurrence \(H_0(x) = 1\), \(H_1(x) = x\) and
 \[
 H_{n+1}(x) = xH_n(x) - n H_{n-1}(x).
 \]
@@ -150,38 +149,36 @@ Note some authors use \(He_n(x)\) instead of \(H_n(x)\).
 Putting this all together we get
 \[
 G(x) = F(x) - \sum_{n=1}^\infty
-B_n(\Delta\kappa_1,\dots,\Delta\kappa_n) e^{-x^2/2}H_{n-1}(x)/\sqrt{2\pi}
+B_n(\Delta\kappa_1,\dots,\Delta\kappa_n) H_{n-1}(x)
+e^{-x^2/2}/n!\sqrt{2\pi}
 \]
 
-%We have
-%\(
-%F^{(1)}(x) = F'(x) = e^{-x^2/2}/\sqrt{2\pi} 
-%= H_0(x) e^{-x^2/2}/\sqrt{2\pi}.
-%\)
-%More generally, 
-%\[
-%F^{(n)}(x) = (-1)^{n-1} H_{n-1}(x) e^{-x^2/2}/\sqrt{2\pi}.
-%\]
-%
-%For appropriate \(\phi\), e.g., exponentially bounded, 
-%integration by parts shows 
-%\(\int_{-\infty}^\infty \phi(x)\,dF^{(n)}
-%= - \int_{-\infty}^\infty \phi'(x)F^{(n)}\,dx
-%= - \int_{-\infty}^\infty \phi'(x)\,dF^{(n-1)}\)
-%so for any \(k\le n\)
-%\[
-%\int_{-\infty}^\infty \phi(x)\,dF^{(n)}
-%= (-1)^k \int_{-\infty}^\infty \phi^{(k)}(x)\,dF^{(n-k)}.
-%\]
+This can be written in powers of \(x\) using
+the facts \(H_n'(x) = nH_{n-1}(x)\),
+\(H_{2n}(0) =(-1)^n(2n - 1)!!\), and \(H_{2n+1}(0) = 0\).
+\begin{align*}
+x &=\sum_{n=1}^\infty B_n/n! H_{n-1}(x) \\
+&=\sum_{n=1}^\infty B_n/n! 
+	\sum_{k=0}^{n-1}H_{n-1}^{(k)}(0) x^k/k!\\
+&=\sum_{k=1}^\infty 
+	\sum_{n=k+1}^\infty B_n/n! H_{n-1}^{(k)}(0) x^k/k!\\
+&=\sum_{k=1}^\infty 
+	\sum_{n=k+1}^\infty B_n/n! 
+	{n-1 \choose k}  H_{n-1-k}(0)x^k\\
+&=\sum_{k=1}^\infty 
+	\sum_{m=0}^\infty B_{m+k+1}/(m+k+1)! {m + k \choose k}  H_m(0)x^k\\
+&=\sum_{k=1}^\infty
+	\sum_{m=0}^\infty B_{2m+k+1}/(2m+k+1)!
+	{2m + k \choose k}  H_{2m}(0)x^k\\
+&=\sum_{k=1}^\infty 
+	\sum_{m=0}^\infty B_{2m+k+1}/(2m+k+1)!
+	{2m + k \choose k}  (-1)^m(2m-1)!! x^k\\
+\end{align*}
 
-%\subsection{Put Valuation}
-%The forward value of a put option with strike \(k\) is
-%\(E\max\{k - S, 0\}\) where 
-%\(S = s\exp(-\kappa(t,\sigma) + \sigma\sqrt{t}Y)\)
-%and \(\kappa(t\sigma) = \log E \exp(\sigma\sqrt{t}Y)\).
-%so \(ES = s\).
-%
-%Let \(\phi(y) = \max\{k - se\exp(-\kappa(t,\sigma) + \sigma\sqrt{t}y)\)
+%\begin{align*}
+%&\sum_1^\infty B_n H_{n-1} \\
+%&= 1*1
+%\end{align*}
 
 \section{The Esscher Transform}
 
@@ -218,11 +215,11 @@ The cumulants of \(Y^*\) can be found from
 \end{align*}
 This shows the cumulants of \(Y^*\) are 
 \(\kappa^*_n = \sum_{k=1}^\infty \kappa_{n + k}s^k/k!\)
-so we can also compute \(P(Y^* \le z) = G^*(z)\) using the same
+so we can also compute \(G^*(z) = P(Y^* \le z)\) using the same
 technique as for \(G\).
 
 If \(G\) is standard normal then all cumulants vanish except \(\kappa_2 = 1\).
-The only nonzero cumulants of \(G^*\) are \(\kappa_1 = s\)
+The only nonzero cumulants of \(Y^*\) are \(\kappa_1 = s\)
 and \(\kappa_2 = 1\). The corresponding complete Bell polynomials
 are \(B_n = s^n/n!\) and we see the above formula is just
 the Taylor series expansion of \(G(z - s)\).
@@ -272,14 +269,12 @@ the Taylor series expansion of \(G(z - s)\).
 %\end{align*}
 %
 \subsection{Examples}
-Recall \(\kappa_n^* = \sum_{k=0}^\infty \kappa_{n+k}s^k/k!\).
 \begin{example}[Normal]
 If \(X\) is normal with mean \(\mu\) and variance \(\sigma^2\) then
-\(\kappa(s) = \mu s + \sigma^2s^2/\) so
+\(\kappa(s) = \mu s + \sigma^2s^2/2\) so
 \(\kappa_1 = \mu\) and \(\kappa_2 = \sigma^2\) are the only non-zero
 cumulants. We also have \(\kappa_1^* = \mu + \sigma^2s\)
 and \(\kappa_2^* = \kappa_2\).
-These formulas follow from \(Ee^X = e^{\mu + \sigma^2/2}\).
 
 If the cumulants of
 a random variable vanish after some some point, then it must
@@ -310,22 +305,23 @@ with mean \(\mu\) then \(\kappa(s) = \mu(e^s - 1)\) so
 %\(\log E e^{uX} = \mu(e^{\lambda(u)} -1)\).
 \begin{example}[Exponential]
 If \(X\) is exponential with mean \(\mu\) then
-\(\kappa(s) = -\log(1 - \mu s)\) and
-\(\kappa_n = (n - 1)!\mu^n\) so
-\(\kappa_n^* = (n-1)!\mu^n/(1 + \mu s)^n\)
+\(\kappa(s) = -\log(1 - \mu s)\),
+\(\kappa_n = (n - 1)!\mu^n\) and
+\(\kappa_n^* = n!\mu^n(1/(1 - \mu s)^{n+1} - 1)\)
 % sum_k (n + k - 1)!\mu^(n+k)/k! =  
 since \(\sum_{k=0}^\infty (n + k - 1)!x^k/k!
-= (n-1)!/(1 - x)^n\).
+= (d/dx)^n(1 - x)^{-1} = n!/(1 - x)^{n + 1}\).
 \end{example}
 \begin{example}[Gamma]
 If \(X\) is gamma with mean \(\alpha/\beta\) and variance
 \(\alpha/\beta^2\) then
 \(\kappa(s) = -\alpha\log(1 - s/\beta)\) and
 \(\kappa_n = (n - 1)!\alpha/\beta^n\) so
-\(\kappa_n^* = (n - 1)!\alpha/\beta^n/(1 - s/\beta)^n\).
+\(\kappa_n^* = (n - 1)!\alpha(\beta - s)^{-n}\).
 
 Note gamma is exponential when
 \(\alpha = 1\) and \(\beta = 1/\mu\).
+\end{example}
 %\begin{align*}
 %Ee^{uX} &= \int_0^\infty e^{ux} x^{\alpha-1} e^{-\beta x}
 %\frac{\beta^\alpha}{\Gamma(\alpha)}\,dx\\
@@ -338,15 +334,18 @@ Note gamma is exponential when
 %\(
 %\log E e^{uX} = \alpha \sum_{n=1}^\infty (u/\beta)^n/n\).
 
-At the money pricing ???
-%F = fe^{-k(s) + s X}, x \le k(s)/s
-\[
-f(P(F\le f) - P^*(F\le f))
-= f(P(X\le \kappa(s)/s\) - P^*(X\le \le \kappa(s)/s)
-= f(\Phi(X\le s/2) - \Phi(-s/2))
-\]
+%At the money pricing ???
+%%F = fe^{-k(s) + s X}, x \le k(s)/s
+%
+%\begin{align*}
+%&P(F\le f) - P^*(F\le f) \\
+%&= P(Y\le \kappa(s)/s) - P^*(Y\le \kappa(s)/s) \\
+%&= G(\kappa(s)/s) - G^*(\kappa(s)/s) \\
+%&= \sum_{n=1}^\infty (-B_n(\Delta\kappa) + B_n(\Delta\kappa^*))
+%    e^{-(\kappa(s)/s)^2/2} H_{n-1}(\kappa(s)/s)/sqrt{2\pi} \\
+%& = \Phi(s/2) - \Phi(-s/2) \\
+%\end{align*}
 
-\end{example}
 %\(\chi^2\) with \(r\) degrees of freedom \(\kappa_n = 2^{n-1}(n-1)!r\).
 
 
@@ -364,11 +363,15 @@ and has finite variance
 there exists a number \(\gamma\) and a non-decreasing function
 \(G\) defined on the real line such that
 \[
-\kappa(s) = \log Ee^{sX} = s\gamma + \int_{-\infty}^\infty K_s(x)\,dG(x),
+\kappa(s) = \log Ee^{sX} = \gamma s + \int_{-\infty}^\infty K_s(x)\,dG(x),
 \]
 where \(K_s(x) = (e^{sx} - 1 - sx)/x^2 = \sum_{n=2}^\infty s^nx^{n-2}/n!\).
 Note the first cumulant of \(X\) is \(\gamma\) and for \(n\ge 2\),
 \(\kappa_n = \int_{-\infty}^\infty x^{n-2}\,dG(x)\).
+
+The Hamburger moment problem[cite?] provides the answer to
+what the allowable cumulants are: the Hankel matrix
+\([\kappa_{i+j}]_{i,j\ge 2}\) must be positive definite.
 
 Since \(K_s(0) = s^2/2\) is the cumulant of the standard normal
 distribution and \(a^2K_s(a) + as\) is the cumulant of a
@@ -408,7 +411,8 @@ modeling stock prices.
 
 A software implementation in C++ is available at
 \url{https://fmsgjr.codeplex.com} and Excel add-ins
-at \url{https://xllgjr.codeplex.com}.
+at \url{https://xllgjr.codeplex.com} that require
+\url{https://xll.codeplex.com}.
 
 \bibliographystyle{amsplain}
 \bibliography{gjr}
