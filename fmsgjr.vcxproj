@@ -147,7 +147,6 @@
     <ClInclude Include="combinatorial.h" />
     <ClInclude Include="cumulant.h" />
     <ClInclude Include="distribution.h" />
-    <ClInclude Include="dual.h" />
     <ClInclude Include="fmsgjr.h" />
     <ClInclude Include="instrument.h" />
     <ClInclude Include="model.h" />

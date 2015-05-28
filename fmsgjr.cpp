@@ -39,7 +39,7 @@ void test_dual()
 	z = x + y;
 	z = z + 1.;
 	x = 2. + z;
-
+/*
 	double a(2);
 	dual::number<> u{a, 1};
 	dual::number<> u3;
@@ -64,6 +64,7 @@ void test_dual()
 	ensure (vv[0] == 1);
 	ensure (vv[1] == 0);
 	ensure (vv[2] == 0);
+*/
 }
 
 void test_combinatorial()

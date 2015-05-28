@@ -4,7 +4,9 @@
 // E max{k - F, 0} = k P(F <= k) - f P(F/f 1( F <= k).
 #pragma once
 #pragma warning(disable: 4244)
-#include "../xll8/xll/ensure.h"
+#include <cassert>
+#define ensure(x) assert(x)
+//#include "../xll8/xll/ensure.h"
 #include <algorithm>
 #include <functional>
 #include <map>
