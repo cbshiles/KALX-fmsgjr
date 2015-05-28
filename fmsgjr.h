@@ -5,7 +5,9 @@
 #pragma once
 #pragma warning(disable: 4244)
 #include <cassert>
+#ifndef ensure
 #define ensure(x) assert(x)
+#endif
 //#include "../xll8/xll/ensure.h"
 #include <algorithm>
 #include <functional>

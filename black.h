@@ -1,7 +1,7 @@
 // black.h - Black forward option value.
 #pragma once
 #include "distribution.h"
-#include "../fmsroot/root1d.h"
+//#include "../fmsroot/root1d.h"
 
 namespace fms {
 	
@@ -141,7 +141,7 @@ namespace fms {
 
 			return s;
 		}
-
+/*
 		// Black implied volatility from call value v.
 		template<class X = double>
 		inline X implied_volatility(const X& f, X v, X k, const X& t, X s0 = 0)
@@ -184,5 +184,5 @@ namespace fms {
 
 			return r.x[0];
 		}
-	} // black
+*/	} // black
 } // fms
